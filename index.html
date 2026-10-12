@@ -5,6 +5,253 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
 <title>🎰 Казино Вася</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+ <!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, push, onValue, onDisconnect, serverTimestamp, query, orderByChild, limitToLast, remove, update }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAa_yNYHP6e1omV1X_aDWmT7jYu3iPh--o",
+    authDomain: "vasya-casino.firebaseapp.com",
+    databaseURL: "https://vasya-casino-default-rtdb.firebaseio.com",
+    projectId: "vasya-casino",
+    storageBucket: "vasya-casino.firebasestorage.app",
+    messagingSenderId: "497507737017",
+    appId: "1:497507737017:web:27a19152bb74956a5aaa68"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const db = getDatabase(fbApp);
+
+  window.FB = {
+    db, ref, set, get, push, onValue, onDisconnect,
+    serverTimestamp, query, orderByChild, limitToLast, remove, update,
+    ready: true
+  };
+  window.dispatchEvent(new Event('fb-ready'));
+</script>
+   /* ============ ОНЛАЙН ============ */
+  .online-block {
+    background: #0a0416;
+    border: 2px solid #7c2d12;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .online-block-title {
+    font-size: 11px;
+    font-weight: 900;
+    color: #fbbf24;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .online-count {
+    background: #4ade80;
+    color: #052e16;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 900;
+  }
+  .online-players {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 26px;
+  }
+  .online-player {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #1a0a2e;
+    border: 1px solid #b45309;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .online-player .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+    animation: onlinePulse 2s infinite;
+  }
+  .online-player.me { border-color: #f472b6; background: #2a0a1a; }
+  @keyframes onlinePulse { 50% { opacity: 0.4; } }
+
+  .lb-list { display: flex; flex-direction: column; gap: 4px; }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.15);
+    border-radius: 8px;
+    font-size: 11px;
+  }
+  .lb-row.top1 { background: linear-gradient(90deg,rgba(251,191,36,0.2),transparent); border-color:#fbbf24; }
+  .lb-row.top2 { background: linear-gradient(90deg,rgba(203,213,225,0.15),transparent); border-color:#cbd5e1; }
+  .lb-row.top3 { background: linear-gradient(90deg,rgba(180,83,9,0.2),transparent); border-color:#b45309; }
+  .lb-row .lb-rank { font-size: 13px; font-weight: 900; width: 22px; text-align: center; }
+  .lb-row .lb-name { flex: 1; color: #fff; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-row .lb-max { color: #4ade80; font-weight: 900; font-size: 11px; }
+
+  .duel-info {
+    font-size: 11px;
+    color: #a78bfa;
+    text-align: center;
+    padding: 4px;
+    line-height: 1.4;
+  }
+  .duel-incoming {
+    margin-top: 8px;
+    display: none;
+    padding: 10px;
+    background: linear-gradient(180deg,#4a0e3a,#12071e);
+    border: 2px solid #f472b6;
+    border-radius: 10px;
+    text-align: center;
+    animation: pop 0.4s ease;
+  }
+  .duel-incoming.show { display: block; }
+  .duel-incoming-text { font-size: 12px; color: #fff; font-weight: 700; margin-bottom: 8px; }
+  .duel-incoming-buttons { display: flex; gap: 6px; }
+  .duel-incoming-buttons button {
+    flex: 1; padding: 8px; border-radius: 8px;
+    font-size: 12px; font-weight: 900; font-family: inherit;
+    cursor: pointer; border: none;
+  }
+  .duel-incoming-buttons .accept { background: linear-gradient(180deg,#4ade80,#16a34a); color:#052e16; }
+  .duel-incoming-buttons .decline { background: #1a0a2e; border: 2px solid #ef4444; color: #ef4444; }
+  .duel-status {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fbbf24;
+    min-height: 20px;
+  }
+  .duel-progress {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 8px;
+    background: #1a0a2e;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+  .duel-side { flex: 1; text-align: center; }
+  .duel-side .name { color: #a78bfa; font-weight: 700; font-size: 10px; }
+  .duel-side .score { color: #fbbf24; font-weight: 900; font-size: 16px; margin-top: 2px; }
+
+  .chat-box {
+    height: 160px;
+    overflow-y: auto;
+    background: #06020c;
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .chat-box::-webkit-scrollbar { width: 3px; }
+  .chat-box::-webkit-scrollbar-thumb { background: #b45309; border-radius: 2px; }
+  .chat-msg {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: #1a0a2e;
+    color: #d1d5db;
+    max-width: 90%;
+    word-wrap: break-word;
+    line-height: 1.35;
+  }
+  .chat-msg.mine {
+    background: linear-gradient(135deg,#7c2d12,#b45309);
+    color: #fff;
+    align-self: flex-end;
+  }
+  .chat-msg .chat-name {
+    font-weight: 900;
+    color: #fbbf24;
+    margin-right: 4px;
+  }
+  .chat-msg.mine .chat-name { color: #fde047; }
+  .chat-msg .chat-time {
+    font-size: 9px;
+    color: #6b7280;
+    margin-left: 4px;
+  }
+  .chat-input-row {
+    display: flex;
+    gap: 6px;
+  }
+  .chat-input-row input {
+    flex: 1;
+    padding: 10px;
+    background: #0a0416;
+    border: 2px solid #7c2d12;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+  .chat-input-row input:focus { border-color: #b45309; }
+  .chat-input-row input::placeholder { color: #6b7280; }
+  .chat-input-row button {
+    width: 46px;
+    background: linear-gradient(180deg,#fde047,#b45309);
+    border: none;
+    border-radius: 8px;
+    color: #3b1a00;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .chat-input-row button:active { transform: scale(0.95); }
+
+  .live-events {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+  .live-events::-webkit-scrollbar { width: 3px; }
+  .live-events::-webkit-scrollbar-thumb { background: #b45309; border-radius: 2px; }
+  .live-event {
+    font-size: 11px;
+    padding: 5px 8px;
+    background: #1a0a2e;
+    border-left: 3px solid #b45309;
+    border-radius: 6px;
+    color: #d1d5db;
+    animation: pop 0.3s ease;
+  }
+  .live-event .live-name { color: #f472b6; font-weight: 900; }
+  .live-event .live-pay { color: #4ade80; font-weight: 900; }
+  .live-event.vasya { border-left-color: #f472b6; background: linear-gradient(90deg,rgba(244,114,182,0.15),#1a0a2e); }
+  .live-event.legend { border-left-color: #fbbf24; background: linear-gradient(90deg,rgba(251,191,36,0.15),#1a0a2e); }
+  .live-event.gold { border-left-color: #f59e0b; }
+
+  .online-offline {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+    font-size: 13px;
+  }
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; }
@@ -314,12 +561,13 @@
       <button type="button" class="icon-btn glass" id="menuBtn">☰</button>
     </div>
 
-    <div class="tabs">
+       <div class="tabs">
       <button type="button" class="tab active" data-page="slot">🎰 СЛОТ</button>
       <button type="button" class="tab" data-page="case">🎁 КЕЙС</button>
       <button type="button" class="tab" data-page="inv">🎒 ИНВ</button>
       <button type="button" class="tab" data-page="upg">⬆️ АП</button>
-      <button type="button" class="tab" data-page="more">📦 ЕЩЁ</button>
+      <button type="button" class="tab" data-page="online">🌐</button>
+      <button type="button" class="tab" data-page="more">📦</button>
     </div>
 
     <!-- СЛОТ -->
@@ -425,7 +673,55 @@
       <div class="result" id="upgResult"></div>
       <button type="button" class="spin-btn" id="upgBtn" disabled>⬆️ Апгрейд</button>
     </div>
+    <div class="page" id="page-online">
+      <div class="title">🌐 ОНЛАЙН</div>
+      <div class="subtitle" id="onlineStatus">Подключение...</div>
 
+      <div id="onlineContent" style="display:none;">
+
+        <div class="online-block">
+          <div class="online-block-title">👥 СЕЙЧАС ИГРАЮТ <span class="online-count" id="onlineCount">0</span></div>
+          <div class="online-players" id="onlinePlayers"></div>
+        </div>
+
+        <div class="online-block">
+          <div class="online-block-title">🏆 ЗАЛ СЛАВЫ</div>
+          <div class="lb-list" id="globalLB"></div>
+        </div>
+
+        <div class="online-block">
+          <div class="online-block-title">⚔️ ДУЭЛИ</div>
+          <div class="duel-info">10 спинов, у кого больше выигрыш — победа!</div>
+          <button type="button" class="spin-btn" id="duelBtn" style="margin-top:8px;">⚔️ БРОСИТЬ ВЫЗОВ</button>
+          <div class="duel-incoming" id="duelIncoming">
+            <div class="duel-incoming-text" id="duelIncomingText"></div>
+            <div class="duel-incoming-buttons">
+              <button type="button" class="accept" id="duelAccept">ПРИНЯТЬ</button>
+              <button type="button" class="decline" id="duelDecline">ОТКАЗ</button>
+            </div>
+          </div>
+          <div class="duel-status" id="duelStatus"></div>
+          <div id="duelProgress"></div>
+        </div>
+
+        <div class="online-block">
+          <div class="online-block-title">💬 ЧАТ</div>
+          <div class="chat-box" id="chatBox"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="Написать..." maxlength="80">
+            <button type="button" id="chatSend">➤</button>
+          </div>
+        </div>
+
+        <div class="online-block">
+          <div class="online-block-title">🔴 ПОСЛЕДНИЕ ПОБЕДЫ</div>
+          <div class="live-events" id="liveEvents"></div>
+        </div>
+
+      </div>
+
+      <div class="online-offline" id="onlineOffline">Firebase не подключён</div>
+    </div>
     <!-- ЕЩЁ -->
     <div class="page" id="page-more">
       <div class="title">📦 ЕЩЁ</div>
