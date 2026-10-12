@@ -1737,6 +1737,9 @@
   /* ============================================
      АПГРЕЙД — КОЛЕСО СО СТРЕЛКОЙ
   ============================================ */
+   /* ============================================
+     АПГРЕЙД — КОЛЕСО СО СТРЕЛКОЙ
+  ============================================ */
   var upgMyItem = null, upgTargetItem = null, upgInProgress = false;
   var upgWheelAngle = 0;
   var upgCanvas = $('upgCanvas'), upgCtx = upgCanvas ? upgCanvas.getContext('2d') : null;
@@ -1748,15 +1751,20 @@
     var c = Math.round(r * 100);
     return c < 5 ? 5 : c > 90 ? 90 : c;
   }
+
   function drawUpgradeWheel() {
     if (!upgCtx) return;
     var w = 480, h = 480, cx = w / 2, cy = h / 2, radius = 210;
     var chance = calcUpgradeChance();
     upgCtx.clearRect(0, 0, w, h);
+
+    // Внешнее кольцо
     upgCtx.beginPath();
     upgCtx.arc(cx, cy, radius + 14, 0, Math.PI * 2);
     upgCtx.fillStyle = '#0a0416'; upgCtx.fill();
     upgCtx.lineWidth = 7; upgCtx.strokeStyle = 'rgba(168,85,247,0.5)'; upgCtx.stroke();
+
+    // Зелёный сектор (шанс успеха)
     var startA = -Math.PI / 2;
     var endA = startA + (chance / 100) * Math.PI * 2;
     upgCtx.beginPath();
@@ -1767,6 +1775,8 @@
     g1.addColorStop(0, '#16a34a'); g1.addColorStop(1, '#4ade80');
     upgCtx.fillStyle = chance > 0 ? g1 : '#1a1a2e';
     upgCtx.fill();
+
+    // Красный сектор
     upgCtx.beginPath();
     upgCtx.moveTo(cx, cy);
     upgCtx.arc(cx, cy, radius, endA, startA + Math.PI * 2);
@@ -1775,36 +1785,33 @@
     g2.addColorStop(0, '#7f1d1d'); g2.addColorStop(1, '#ef4444');
     upgCtx.fillStyle = chance > 0 ? g2 : '#2a0a0a';
     upgCtx.fill();
-    // текст процентов
-    if (chance > 0) {
-      upgCtx.save();
-      upgCtx.translate(cx, cy);
-      // Зелёный сектор - центр
+
+    // Текст процентов внутри секторов
+    if (chance > 0 && chance < 100) {
       var greenMid = startA + (endA - startA) / 2;
       upgCtx.save();
+      upgCtx.translate(cx, cy);
       upgCtx.rotate(greenMid);
-      upgCtx.translate(radius * 0.65, 0);
-      upgCtx.rotate(-greenMid);
       upgCtx.fillStyle = '#fff';
-      upgCtx.font = 'bold 32px sans-serif';
+      upgCtx.font = 'bold 34px sans-serif';
       upgCtx.textAlign = 'center';
       upgCtx.textBaseline = 'middle';
-      upgCtx.fillText(chance + '%', 0, 0);
+      upgCtx.fillText(chance + '%', radius * 0.6, 0);
       upgCtx.restore();
-      // Красный сектор
+
       var redMid = endA + (startA + Math.PI * 2 - endA) / 2;
       upgCtx.save();
+      upgCtx.translate(cx, cy);
       upgCtx.rotate(redMid);
-      upgCtx.translate(radius * 0.65, 0);
-      upgCtx.rotate(-redMid);
       upgCtx.fillStyle = '#fff';
-      upgCtx.font = 'bold 32px sans-serif';
+      upgCtx.font = 'bold 34px sans-serif';
       upgCtx.textAlign = 'center';
       upgCtx.textBaseline = 'middle';
-      upgCtx.fillText((100 - chance) + '%', 0, 0);
-      upgCtx.restore();
+      upgCtx.fillText((100 - chance) + '%', radius * 0.6, 0);
       upgCtx.restore();
     }
+
+    // Деления
     upgCtx.strokeStyle = 'rgba(255,255,255,0.15)';
     upgCtx.lineWidth = 1.5;
     for (var i = 0; i < 36; i++) {
@@ -1814,13 +1821,24 @@
       upgCtx.lineTo(cx + Math.cos(a) * radius, cy + Math.sin(a) * radius);
       upgCtx.stroke();
     }
+
+    // Обводка
     upgCtx.beginPath();
     upgCtx.arc(cx, cy, radius, 0, Math.PI * 2);
     upgCtx.lineWidth = 4;
-    upgCtx.strokeStyle = chance > 0 ? 'var(--accent2)' : '#4b5563';
     upgCtx.strokeStyle = chance > 0 ? '#fbbf24' : '#4b5563';
     upgCtx.stroke();
+
+    // Центр
+    upgCtx.beginPath();
+    upgCtx.arc(cx, cy, 30, 0, Math.PI * 2);
+    upgCtx.fillStyle = '#0a0416';
+    upgCtx.fill();
+    upgCtx.strokeStyle = '#fbbf24';
+    upgCtx.lineWidth = 3;
+    upgCtx.stroke();
   }
+
   function updateUpgradeUI() {
     if (upgMyItem) {
       $('upgMyContent').innerHTML = '<div style="text-align:center"><div style="font-size:44px;line-height:1">' + upgMyItem.icon + '</div><div style="font-size:12px;font-weight:900;margin-top:4px;color:#fff">' + upgMyItem.name + '</div><div style="font-size:11px;color:#4ade80;font-weight:900;margin-top:2px">' + upgMyItem.price + ' ВК</div></div>';
@@ -1834,11 +1852,13 @@
     }
     var c = calcUpgradeChance();
     $('upgChanceVal').textContent = c > 0 ? c + '%' : '—';
+    if (upgCanvas) upgCanvas.style.transform = 'rotate(0rad)';
     upgWheelAngle = 0;
     drawUpgradeWheel();
     $('upgBtn').disabled = !(upgMyItem && upgTargetItem && !upgInProgress && c > 0);
   }
   window.updateUpgradeUI = updateUpgradeUI;
+
   function openPicker(mode) {
     $('pickerTitle').textContent = mode === 'my' ? 'Выбери свой предмет' : 'Выбери цель';
     var grid = $('pickerGrid');
@@ -1855,7 +1875,8 @@
         }
         var keys = Object.keys(groups);
         for (var j = 0; j < keys.length; j++) {
-          var g = groups[keys[j]]; var rar = RARITY[g.item.rarity];
+          var g = groups[keys[j]];
+          var rar = RARITY[g.item.rarity];
           var card = document.createElement('div');
           card.style.cssText = 'padding:8px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;border:2px solid ' + rar.color + ';background:linear-gradient(180deg,#1a1a2e,#0a0416);cursor:pointer;';
           card.innerHTML = '<div style="font-size:26px">' + g.item.icon + '</div><div style="font-size:9px;color:#d1d5db;text-align:center;margin-top:2px;font-weight:700;">' + g.item.name + (g.count > 1 ? ' ×' + g.count : '') + '</div><div style="font-size:10px;color:#4ade80;font-weight:900;margin-top:2px;">' + g.item.price + '</div>';
@@ -1865,9 +1886,10 @@
       }
     } else {
       for (var k = 0; k < ITEMS.length; k++) {
-        var item = ITEMS[k]; var rar = RARITY[item.rarity];
+        var item = ITEMS[k];
+        var rar2 = RARITY[item.rarity];
         var card2 = document.createElement('div');
-        card2.style.cssText = 'padding:8px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;border:2px solid ' + rar.color + ';background:linear-gradient(180deg,#1a1a2e,#0a0416);cursor:pointer;';
+        card2.style.cssText = 'padding:8px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;border:2px solid ' + rar2.color + ';background:linear-gradient(180deg,#1a1a2e,#0a0416);cursor:pointer;';
         card2.innerHTML = '<div style="font-size:26px">' + item.icon + '</div><div style="font-size:9px;color:#d1d5db;text-align:center;margin-top:2px;font-weight:700;">' + item.name + '</div><div style="font-size:10px;color:#4ade80;font-weight:900;margin-top:2px;">' + item.price + '</div>';
         (function(it) { card2.addEventListener('click', function() { upgTargetItem = it; pickerModal.classList.remove('show'); updateUpgradeUI(); }); })(item);
         grid.appendChild(card2);
@@ -1878,6 +1900,7 @@
   on($('upgMySlot'), function() { if (!upgInProgress) openPicker('my'); });
   on($('upgTargetSlot'), function() { if (!upgInProgress) openPicker('target'); });
   on($('pickerClose'), function() { pickerModal.classList.remove('show'); });
+
   function sendToUpgrade() {
     if (!currentItem) return;
     upgMyItem = currentItem;
@@ -1886,6 +1909,7 @@
     updateUpgradeUI();
   }
   on($('imUpgradeBtn'), sendToUpgrade);
+
   function startUpgrade() {
     if (upgInProgress || !upgMyItem || !upgTargetItem) return;
     var chance = calcUpgradeChance();
@@ -1893,53 +1917,57 @@
     $('upgBtn').disabled = true;
     $('upgResult').className = 'result';
     $('upgResult').textContent = '';
-        var success = Math.random() * 100 <= chance;
-    var extraSpins = 6 + Math.floor(Math.random() * 4);
-    // Определяем границы сектора зелёного
+
+    var success = Math.random() * 100 <= chance;
+
+    // Сектор выигрыша: от -90° до (-90 + chance * 3.6)°
     var startA = -Math.PI / 2;
     var endA = startA + (chance / 100) * Math.PI * 2;
+
+    // Куда должна указать стрелка (она сверху, это -90° или 3π/2)
+    var arrowAngle = -Math.PI / 2;
+
+    // Определяем нужный угол СЕКТОРА колеса, который должен оказаться под стрелкой
     var targetSectorAngle;
     if (success) {
       targetSectorAngle = startA + Math.random() * (endA - startA);
     } else {
-      targetSectorAngle = endA + Math.random() * (startA + Math.PI * 2 - endA);
+      targetSectorAngle = endA + Math.random() * (Math.PI * 2 - (endA - startA) - 0.05);
     }
-    // начальное положение колеса = upgWheelAngle
-    // нам нужно, чтобы после поворота targetSectorAngle совпал с углом стрелки (-90° = -Math.PI/2)
-    // конечный угол колеса = -Math.PI/2 - targetSectorAngle + 2π*n
-    var targetFinalAngle = -Math.PI / 2 - targetSectorAngle;
-    // добавляем обороты
-    var turns = extraSpins * Math.PI * 2;
-    var delta = targetFinalAngle - upgWheelAngle + turns;
-    // нормализуем delta чтобы было > 0
-    while (delta < turns) delta += Math.PI * 2;
+
+    // Конечный угол поворота колеса: arrowAngle - targetSectorAngle + обороты
+    var turns = (6 + Math.floor(Math.random() * 4)) * Math.PI * 2;
     var startAngle = upgWheelAngle;
-    var targetAngle = startAngle + delta;
+    var endAngle = arrowAngle - targetSectorAngle + turns;
+    while (endAngle <= startAngle) endAngle += Math.PI * 2;
+    while (endAngle > startAngle + turns + Math.PI * 2) endAngle -= Math.PI * 2;
+
     var startTime = performance.now();
-    var duration = 4800;
+    var duration = 4500;
+
     function anim(now) {
       var el = now - startTime;
       var pr = Math.min(1, el / duration);
+      // ease out cubic
       var ease = 1 - Math.pow(1 - pr, 3);
-      upgWheelAngle = startAngle + (targetAngle - startAngle) * ease;
-      var canvas = upgCanvas;
-      if (canvas) canvas.style.transform = 'rotate(' + upgWheelAngle + 'rad)';
-      // перерисовываем с фиксированной позицией
-      var savedAngle = upgWheelAngle;
-      upgWheelAngle = 0;
-      drawUpgradeWheel();
-      upgWheelAngle = savedAngle;
+      upgWheelAngle = startAngle + (endAngle - startAngle) * ease;
+      if (upgCanvas) {
+        // вращаем через CSS transform — быстро и плавно
+        upgCanvas.style.transform = 'rotate(' + upgWheelAngle + 'rad)';
+      }
       if (pr < 1) {
         if (Math.random() < 0.12) sTick();
         requestAnimationFrame(anim);
       } else {
-        upgWheelAngle = targetAngle;
+        upgWheelAngle = endAngle;
+        if (upgCanvas) upgCanvas.style.transform = 'rotate(' + upgWheelAngle + 'rad)';
         setTimeout(function() { finishUpgrade(success, chance); }, 300);
       }
     }
     requestAnimationFrame(anim);
   }
   on($('upgBtn'), startUpgrade);
+
   function finishUpgrade(success, chance) {
     if (success) {
       for (var i = 0; i < S.inventory.length; i++) if (S.inventory[i].uid === upgMyItem.uid) { S.inventory.splice(i, 1); break; }
