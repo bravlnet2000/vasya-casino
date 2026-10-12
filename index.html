@@ -128,7 +128,7 @@
   .bet-btn { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(180deg, #2e1a44, #12071e); border: 2px solid var(--border); color: var(--accent2); font-size: 24px; font-weight: 900; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #7c2d12; }
   .bet-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #7c2d12; }
   .bet-value { font-size: 22px; font-weight: 900; color: #fff; min-width: 70px; text-align: center; }
-  .spin-btn { margin-top: 14px; width: 100%; padding: 18px; border: none; border-radius: 16px; background: linear-gradient(180deg, #fde047 0%, #f59e0b 55%, #b45309 100%); color: #3b1a00; font-size: 18px; font-weight: 900; letter-spacing: 3px; cursor: pointer; text-transform: uppercase; font-family: inherit; box-shadow: 0 6px 0 #78350f; }
+  .spin-btn { margin-top: 14px; width: 100%; padding: 18px; border: none; border-radius: 16px; background: linear-gradient(180deg, #fde047 0%, #f59e0b 55%, #b45309 100%); color: #3b1a00; font-size: 18px; font-weight: 900; letter-spacing: 3px; cursor: pointer; text-transform: uppercase; font-family: inherit; box-shadow: 0 6px 0 #78350f; position: relative; }
   .spin-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #78350f; }
   .spin-btn:disabled { filter: brightness(0.55); cursor: not-allowed; }
   .spin-btn.ghost { background: transparent; border: 2px solid var(--border); color: #d8b4fe; box-shadow: none; }
@@ -176,36 +176,21 @@
   .player-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
   .player-modal-name { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
   .player-modal-info { font-size: 13px; color: #d8b4fe; font-weight: 700; margin-bottom: 16px; }
-  .player-modal-btns button { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; font-family: inherit; margin-bottom: 8px; }
-  .player-modal-btns .duel { background: linear-gradient(180deg, #f472b6, #dc2626); color: #fff; }
+  .player-modal-btns button { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; font-family: inherit; margin-bottom: 8px; position: relative; }
+  .player-modal-btns .duel { background: linear-gradient(180deg, #4b5563, #374151); color: #9ca3af; cursor: not-allowed; }
   .player-modal-btns .friend { background: linear-gradient(180deg, #4ade80, #16a34a); color: #052e16; }
   .player-modal-btns .close { background: transparent; border: 2px solid var(--border); color: #d8b4fe; margin-bottom: 0; }
   .risk-row { display: flex; gap: 10px; margin-top: 12px; }
   .risk-row button { flex: 1; padding: 14px 8px; border: none; border-radius: 14px; font-size: 13px; font-weight: 900; letter-spacing: 1px; cursor: pointer; font-family: inherit; line-height: 1.2; }
   .risk-row .safe { background: linear-gradient(180deg, #4ade80, #16a34a); color: #052e16; }
   .risk-row .risky { background: linear-gradient(180deg, #f472b6, #dc2626); color: #fff; }
-  /* ДУРАК */
-  .durak-table { position: relative; width: 100%; min-height: 300px; background: radial-gradient(ellipse at center, #1a4a2e 0%, #0a1a10 100%); border: 3px solid #7c2d12; border-radius: 20px; padding: 12px; margin-bottom: 10px; }
-  .durak-field { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 100px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 12px; }
-  .durak-me { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; min-height: 80px; margin-top: 12px; }
-  .card { width: 44px; height: 62px; border-radius: 6px; background: #fff; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; user-select: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
-  .card.red { color: #dc2626; }
-  .card.black { color: #000; }
-  .card.back { background: linear-gradient(135deg, #1e40af, #1e3a8a); color: transparent; }
-  .card.back::before { content: '🎴'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-  .card.small { width: 32px; height: 46px; font-size: 12px; }
-  .card.clickable { cursor: pointer; }
-  .card.clickable:active { transform: scale(0.9); }
-  .card .suit-sym { font-size: 14px; line-height: 1; }
-  .durak-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 10px; }
-  .durak-kresti { color: #fbbf24; font-weight: 900; }
-  .durak-actions { display: flex; gap: 8px; margin-top: 10px; }
-  .durak-actions button { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: 900; font-size: 13px; cursor: pointer; font-family: inherit; }
-  .durak-take { background: linear-gradient(180deg, #f472b6, #dc2626); color: #fff; }
-  .durak-pass { background: linear-gradient(180deg, #4ade80, #16a34a); color: #052e16; }
-  .durak-lobby-player { display: flex; align-items: center; gap: 8px; padding: 10px; background: #0a0416; border: 2px solid var(--border); border-radius: 12px; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
-  .durak-lobby-player.ready { border-color: #4ade80; }
   .chat-name-link { cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  /* ЗАГЛУШКА СКОРО */
+  .soon-block { opacity: 0.55; filter: grayscale(0.4); }
+  .soon-block .spin-btn,
+  .soon-block button { background: linear-gradient(180deg, #4b5563, #374151) !important; color: #9ca3af !important; box-shadow: none !important; cursor: not-allowed !important; }
+  .soon-label { display: inline-block; margin-left: 8px; background: #fbbf24; color: #3b1a00; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.5px; animation: soonPulse 1.5s ease-in-out infinite; }
+  @keyframes soonPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 </style>
 </head>
 <body class="skin-classic">
@@ -370,23 +355,19 @@
             <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">🏆 ЗАЛ СЛАВЫ</div>
             <div id="globalLB" style="display: flex; flex-direction: column; gap: 4px;"></div>
           </div>
-          <div class="machine" style="padding: 12px; margin-bottom: 10px;">
-            <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">⚔️ ДУЭЛИ</div>
-            <button type="button" class="spin-btn" id="duelBtn" style="margin: 0 0 8px 0;">⚔️ ВЫЗВАТЬ НА ДУЭЛЬ</button>
-            <div id="duelIncoming" class="machine" style="display:none; padding: 12px; border-color: #f472b6; text-align:center;">
-              <div id="duelIncomingText" style="font-size: 13px; font-weight: 900; margin-bottom: 10px;"></div>
-              <div style="display:flex; gap: 8px;">
-                <button type="button" class="spin-btn" id="duelAccept" style="margin:0; font-size: 13px;">ПРИНЯТЬ</button>
-                <button type="button" class="spin-btn" id="duelDecline" style="margin:0; font-size: 13px; background: linear-gradient(180deg,#7f1d1d,#450a0a); color:#fff;">ОТКАЗ</button>
-              </div>
-            </div>
-            <div id="duelStatus" style="margin-top: 10px; text-align: center; font-size: 12px; color: var(--accent2); font-weight: 700; min-height: 18px;"></div>
-            <div id="duelProgress"></div>
+
+          <div class="machine soon-block" style="padding: 12px; margin-bottom: 10px;">
+            <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">⚔️ ДУЭЛИ <span class="soon-label">СКОРО</span></div>
+            <div style="font-size: 11px; color:#d8b4fe; text-align: center; padding: 4px 0 10px;">Скоро сможешь вызывать друзей на дуэль!</div>
+            <button type="button" class="spin-btn" id="duelBtn" disabled style="margin: 0;">⚔️ ВЫЗВАТЬ НА ДУЭЛЬ</button>
           </div>
-          <div class="machine" style="padding: 12px; margin-bottom: 10px;">
-            <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">🎴 ДУРАК</div>
-            <button type="button" class="spin-btn" id="durakBtn" style="margin: 0;">🎴 ИГРАТЬ В ДУРАКА</button>
+
+          <div class="machine soon-block" style="padding: 12px; margin-bottom: 10px;">
+            <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">🎴 ДУРАК <span class="soon-label">СКОРО</span></div>
+            <div style="font-size: 11px; color:#d8b4fe; text-align: center; padding: 4px 0 10px;">Онлайн-дурак появится совсем скоро!</div>
+            <button type="button" class="spin-btn" id="durakBtn" disabled style="margin: 0;">🎴 ИГРАТЬ В ДУРАКА</button>
           </div>
+
           <div class="machine" style="padding: 12px; margin-bottom: 10px;">
             <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">💬 ЧАТ</div>
             <div id="chatBox" style="height: 180px; overflow-y: auto; background: #06020c; border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px;"></div>
@@ -474,39 +455,6 @@
   </div>
 </div>
 
-<div class="screen" id="screen-durak">
-  <div style="padding: 12px; height: 100%; display:flex; flex-direction:column; width: 100%; max-width: 480px; margin: 0 auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-      <button type="button" class="back-btn" id="durakExit" style="margin: 0; padding: 8px 14px; font-size: 12px;">← ВЫЙТИ</button>
-      <div id="durakTitle" style="font-size: 14px; font-weight: 900; color: var(--accent2);">🎴 ДУРАК</div>
-      <div style="width: 70px;"></div>
-    </div>
-    <div id="durakLobby" style="display:none;">
-      <div class="machine">
-        <div style="font-size: 14px; font-weight: 900; color: var(--accent2); text-align: center; margin-bottom: 10px;">ЛОББИ</div>
-        <div id="durakLobbyPlayers"></div>
-        <div style="display:flex; gap: 8px; margin-top: 14px;">
-          <button type="button" class="spin-btn" id="durakReadyBtn" style="margin:0; font-size: 13px;">✅ Я ГОТОВ</button>
-          <button type="button" class="spin-btn" id="durakStartBtn" style="margin:0; font-size: 13px;">▶️ НАЧАТЬ</button>
-        </div>
-        <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #d8b4fe;" id="durakLobbyStatus">Ждём игроков...</div>
-      </div>
-    </div>
-    <div id="durakGame" style="display:none; flex-direction:column; flex:1;">
-      <div class="durak-table">
-        <div class="durak-info">
-          <div>🎴 Козырь: <span class="durak-kresti" id="durakKresti">?</span></div>
-          <div>Колода: <span id="durakDeck">0</span></div>
-        </div>
-        <div id="durakOpps"></div>
-        <div class="durak-field" id="durakField"></div>
-        <div class="durak-me" id="durakMe"></div>
-      </div>
-      <div class="durak-actions" id="durakActions"></div>
-    </div>
-  </div>
-</div>
-
 <div class="modal" id="pickerModal">
   <div class="modal-box" style="max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
     <h3 id="pickerTitle">Выбери предмет</h3>
@@ -541,7 +489,7 @@
       <div style="background:#0a0416; padding:8px; border-radius:8px;"><div style="color:#d8b4fe; font-size:9px;">РАНГ</div><div style="color:var(--accent2); font-weight:900; font-size:11px;" id="pmRank">ЛОХ</div></div>
     </div>
     <div class="player-modal-btns">
-      <button type="button" class="duel" id="pmDuel">⚔️ ВЫЗВАТЬ НА ДУЭЛЬ</button>
+      <button type="button" class="duel" id="pmDuel" disabled>⚔️ ДУЭЛЬ <span class="soon-label">СКОРО</span></button>
       <button type="button" class="friend" id="pmFriend">🤝 ДОБАВИТЬ В ДРУЗЬЯ</button>
       <button type="button" class="close" id="pmClose">ЗАКРЫТЬ</button>
     </div>
@@ -634,7 +582,7 @@
   var $ = function(id) { return document.getElementById(id); };
   var on = function(el, fn) { if (el) el.addEventListener('click', function(e) { e.preventDefault(); fn(e); }); };
 
-  var screens = { start: $('screen-start'), choice: $('screen-choice'), game: $('screen-game'), durak: $('screen-durak') };
+  var screens = { start: $('screen-start'), choice: $('screen-choice'), game: $('screen-game') };
   function showScreen(name) { for (var k in screens) if (screens[k]) screens[k].classList.toggle('active', k === name); }
   on($('becomeBtn'), function() { showScreen('choice'); haptic('light'); });
   on($('backToStart'), function() { showScreen('start'); });
@@ -658,7 +606,7 @@
   }
 
   var BETS = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000];
-  var S_KEY = 'vasyadrop_v8';
+  var S_KEY = 'vasyadrop_v9';
   var CASE_PRICE = 100;
   var DAILY_AMOUNT = 500, DAILY_CD = 24 * 60 * 60 * 1000;
   var AD_REWARD = 500;
@@ -1627,8 +1575,180 @@
   on($('openDice'), openDice);
   on($('openBJ'), openBJ);
 
+  var upgMyItem = null, upgTargetItem = null, upgInProgress = false;
+  var upgWheelAngle = 0;
+  var upgCanvas = $('upgCanvas'), upgCtx = upgCanvas ? upgCanvas.getContext('2d') : null;
+
+  function calcUpgradeChance() {
+    if (!upgMyItem || !upgTargetItem) return 0;
+    var r = upgMyItem.price / upgTargetItem.price;
+    if (r >= 1) return 90;
+    var c = Math.round(r * 100);
+    return c < 5 ? 5 : c > 90 ? 90 : c;
+  }
+  function drawUpgradeWheel() {
+    if (!upgCtx) return;
+    var w = 480, h = 480, cx = w / 2, cy = h / 2, radius = 210;
+    var chance = calcUpgradeChance();
+    upgCtx.clearRect(0, 0, w, h);
+    upgCtx.beginPath();
+    upgCtx.arc(cx, cy, radius + 14, 0, Math.PI * 2);
+    upgCtx.fillStyle = '#0a0416'; upgCtx.fill();
+    upgCtx.lineWidth = 7; upgCtx.strokeStyle = 'rgba(168,85,247,0.5)'; upgCtx.stroke();
+    var startA = -Math.PI / 2;
+    var endA = startA + (chance / 100) * Math.PI * 2;
+    upgCtx.beginPath(); upgCtx.moveTo(cx, cy); upgCtx.arc(cx, cy, radius, startA, endA); upgCtx.closePath();
+    var g1 = upgCtx.createRadialGradient(cx, cy, 20, cx, cy, radius);
+    g1.addColorStop(0, '#16a34a'); g1.addColorStop(1, '#4ade80');
+    upgCtx.fillStyle = chance > 0 ? g1 : '#1a1a2e'; upgCtx.fill();
+    upgCtx.beginPath(); upgCtx.moveTo(cx, cy); upgCtx.arc(cx, cy, radius, endA, startA + Math.PI * 2); upgCtx.closePath();
+    var g2 = upgCtx.createRadialGradient(cx, cy, 20, cx, cy, radius);
+    g2.addColorStop(0, '#7f1d1d'); g2.addColorStop(1, '#ef4444');
+    upgCtx.fillStyle = chance > 0 ? g2 : '#2a0a0a'; upgCtx.fill();
+    if (chance > 0 && chance < 100) {
+      var gm = startA + (endA - startA) / 2;
+      upgCtx.save(); upgCtx.translate(cx, cy); upgCtx.rotate(gm);
+      upgCtx.fillStyle = '#fff'; upgCtx.font = 'bold 34px sans-serif'; upgCtx.textAlign = 'center'; upgCtx.textBaseline = 'middle';
+      upgCtx.fillText(chance + '%', radius * 0.6, 0);
+      upgCtx.restore();
+      var rm = endA + (startA + Math.PI * 2 - endA) / 2;
+      upgCtx.save(); upgCtx.translate(cx, cy); upgCtx.rotate(rm);
+      upgCtx.fillStyle = '#fff'; upgCtx.font = 'bold 34px sans-serif'; upgCtx.textAlign = 'center'; upgCtx.textBaseline = 'middle';
+      upgCtx.fillText((100 - chance) + '%', radius * 0.6, 0);
+      upgCtx.restore();
+    }
+    upgCtx.strokeStyle = 'rgba(255,255,255,0.15)'; upgCtx.lineWidth = 1.5;
+    for (var i = 0; i < 36; i++) {
+      var a = (i / 36) * Math.PI * 2;
+      upgCtx.beginPath();
+      upgCtx.moveTo(cx + Math.cos(a) * (radius - 14), cy + Math.sin(a) * (radius - 14));
+      upgCtx.lineTo(cx + Math.cos(a) * radius, cy + Math.sin(a) * radius);
+      upgCtx.stroke();
+    }
+    upgCtx.beginPath(); upgCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    upgCtx.lineWidth = 4; upgCtx.strokeStyle = chance > 0 ? '#fbbf24' : '#4b5563'; upgCtx.stroke();
+    upgCtx.beginPath(); upgCtx.arc(cx, cy, 30, 0, Math.PI * 2);
+    upgCtx.fillStyle = '#0a0416'; upgCtx.fill();
+    upgCtx.strokeStyle = '#fbbf24'; upgCtx.lineWidth = 3; upgCtx.stroke();
+  }
+  function updateUpgradeUI() {
+    if (upgMyItem) $('upgMyContent').innerHTML = '<div style="text-align:center"><div style="font-size:44px;line-height:1">' + upgMyItem.icon + '</div><div style="font-size:12px;font-weight:900;margin-top:4px;color:#fff">' + upgMyItem.name + '</div><div style="font-size:11px;color:#4ade80;font-weight:900;margin-top:2px">' + upgMyItem.price + ' ВК</div></div>';
+    else $('upgMyContent').innerHTML = '<div style="font-size:12px;color:#6b7280;">Нажми, чтобы выбрать</div>';
+    if (upgTargetItem) $('upgTargetContent').innerHTML = '<div style="text-align:center"><div style="font-size:44px;line-height:1">' + upgTargetItem.icon + '</div><div style="font-size:12px;font-weight:900;margin-top:4px;color:#fff">' + upgTargetItem.name + '</div><div style="font-size:11px;color:#4ade80;font-weight:900;margin-top:2px">' + upgTargetItem.price + ' ВК</div></div>';
+    else $('upgTargetContent').innerHTML = '<div style="font-size:12px;color:#6b7280;">Нажми, чтобы выбрать</div>';
+    var c = calcUpgradeChance();
+    $('upgChanceVal').textContent = c > 0 ? c + '%' : '—';
+    if (upgCanvas) upgCanvas.style.transform = 'rotate(0rad)';
+    upgWheelAngle = 0;
+    drawUpgradeWheel();
+    $('upgBtn').disabled = !(upgMyItem && upgTargetItem && !upgInProgress && c > 0);
+  }
+  window.updateUpgradeUI = updateUpgradeUI;
+  function openPicker(mode) {
+    $('pickerTitle').textContent = mode === 'my' ? 'Выбери свой предмет' : 'Выбери цель';
+    var grid = $('pickerGrid'); grid.innerHTML = '';
+    if (mode === 'my') {
+      if (!S.inventory.length) grid.innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;color:#6b7280;font-size:12px;">Инвентарь пуст</div>';
+      else {
+        var groups = {};
+        for (var i = 0; i < S.inventory.length; i++) { var it = S.inventory[i]; if (!groups[it.id]) groups[it.id] = { item: it, count: 0 }; groups[it.id].count++; }
+        var keys = Object.keys(groups);
+        for (var j = 0; j < keys.length; j++) {
+          var g = groups[keys[j]]; var rar = RARITY[g.item.rarity];
+          var card = document.createElement('div');
+          card.style.cssText = 'padding:8px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;border:2px solid ' + rar.color + ';background:linear-gradient(180deg,#1a1a2e,#0a0416);cursor:pointer;';
+          card.innerHTML = '<div style="font-size:26px">' + g.item.icon + '</div><div style="font-size:9px;color:#d1d5db;text-align:center;margin-top:2px;font-weight:700;">' + g.item.name + (g.count > 1 ? ' ×' + g.count : '') + '</div><div style="font-size:10px;color:#4ade80;font-weight:900;margin-top:2px;">' + g.item.price + '</div>';
+          (function(item) { card.addEventListener('click', function() { upgMyItem = item; pickerModal.classList.remove('show'); updateUpgradeUI(); }); })(g.item);
+          grid.appendChild(card);
+        }
+      }
+    } else {
+      for (var k = 0; k < ITEMS.length; k++) {
+        var item = ITEMS[k]; var rar2 = RARITY[item.rarity];
+        var card2 = document.createElement('div');
+        card2.style.cssText = 'padding:8px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;border:2px solid ' + rar2.color + ';background:linear-gradient(180deg,#1a1a2e,#0a0416);cursor:pointer;';
+        card2.innerHTML = '<div style="font-size:26px">' + item.icon + '</div><div style="font-size:9px;color:#d1d5db;text-align:center;margin-top:2px;font-weight:700;">' + item.name + '</div><div style="font-size:10px;color:#4ade80;font-weight:900;margin-top:2px;">' + item.price + '</div>';
+        (function(it) { card2.addEventListener('click', function() { upgTargetItem = it; pickerModal.classList.remove('show'); updateUpgradeUI(); }); })(item);
+        grid.appendChild(card2);
+      }
+    }
+    pickerModal.classList.add('show');
+  }
+  on($('upgMySlot'), function() { if (!upgInProgress) openPicker('my'); });
+  on($('upgTargetSlot'), function() { if (!upgInProgress) openPicker('target'); });
+  on($('pickerClose'), function() { pickerModal.classList.remove('show'); });
+  function sendToUpgrade() {
+    if (!currentItem) return;
+    upgMyItem = currentItem;
+    itemModal.classList.remove('show');
+    switchPage('upgrade');
+    updateUpgradeUI();
+  }
+  on($('imUpgradeBtn'), sendToUpgrade);
+
+  function startUpgrade() {
+    if (upgInProgress || !upgMyItem || !upgTargetItem) return;
+    var chance = calcUpgradeChance();
+    upgInProgress = true;
+    $('upgBtn').disabled = true;
+    $('upgResult').className = 'result'; $('upgResult').textContent = '';
+    var success = Math.random() * 100 <= chance;
+    var startA = -Math.PI / 2;
+    var endA = startA + (chance / 100) * Math.PI * 2;
+    var arrowAngle = -Math.PI / 2;
+    var targetSectorAngle;
+    if (success) targetSectorAngle = startA + Math.random() * (endA - startA);
+    else targetSectorAngle = endA + Math.random() * (Math.PI * 2 - (endA - startA) - 0.05);
+    var turns = (6 + Math.floor(Math.random() * 4)) * Math.PI * 2;
+    var startAngle = upgWheelAngle;
+    var endAngle = arrowAngle - targetSectorAngle + turns;
+    while (endAngle <= startAngle) endAngle += Math.PI * 2;
+    var startTime = performance.now(), duration = 4500;
+    function anim(now) {
+      var el = now - startTime;
+      var pr = Math.min(1, el / duration);
+      var ease = 1 - Math.pow(1 - pr, 3);
+      upgWheelAngle = startAngle + (endAngle - startAngle) * ease;
+      if (upgCanvas) upgCanvas.style.transform = 'rotate(' + upgWheelAngle + 'rad)';
+      if (pr < 1) { if (Math.random() < 0.12) sTick(); requestAnimationFrame(anim); }
+      else {
+        upgWheelAngle = endAngle;
+        if (upgCanvas) upgCanvas.style.transform = 'rotate(' + upgWheelAngle + 'rad)';
+        setTimeout(function() { finishUpgrade(success, chance); }, 300);
+      }
+    }
+    requestAnimationFrame(anim);
+  }
+  on($('upgBtn'), startUpgrade);
+  function finishUpgrade(success, chance) {
+    if (success) {
+      for (var i = 0; i < S.inventory.length; i++) if (S.inventory[i].uid === upgMyItem.uid) { S.inventory.splice(i, 1); break; }
+      S.inventory.push({ uid: Date.now() + Math.random(), id: upgTargetItem.id, icon: upgTargetItem.icon, name: upgTargetItem.name, rarity: upgTargetItem.rarity, price: upgTargetItem.price });
+      save(); renderInv();
+      $('upgResult').className = 'result win';
+      $('upgResult').innerHTML = '✅ УСПЕХ! ' + upgTargetItem.icon + ' ' + upgTargetItem.name + '<div class="sub">+' + (upgTargetItem.price - upgMyItem.price).toLocaleString('ru-RU') + ' ВК</div>';
+      if (upgTargetItem.rarity === 'vasya' || upgTargetItem.rarity === 'legend') { confetti(50); sJack(); voiceWin(); }
+      else { confetti(20); sWin(); }
+      coins($('upgBtn'));
+      pushFeed(S.name || 'Ты', upgTargetItem.icon, upgTargetItem.price, 1);
+      upgMyItem = null; upgTargetItem = null; updateUpgradeUI();
+    } else {
+      for (var j = 0; j < S.inventory.length; j++) if (S.inventory[j].uid === upgMyItem.uid) { S.inventory.splice(j, 1); break; }
+      save(); renderInv();
+      $('upgResult').className = 'result lose';
+      $('upgResult').innerHTML = '💀 ПРОВАЛ! Потерян ' + upgMyItem.icon + ' ' + upgMyItem.name + '<div class="sub">Шанс: ' + chance + '%</div>';
+      sLose(); voiceLose(); shakeScreen();
+      upgMyItem = null; updateUpgradeUI();
+    }
+    upgInProgress = false;
+    checkAchievements();
+  }
+
   console.log('ВАСЯ ДРОП: часть A загружена');
-  
+
+  /* ============================================
+     FIREBASE ОНЛАЙН
+  ============================================ */
   var FB_state = { online: false, init: false };
   var friendsList = [];
   var incomingRequests = [];
@@ -1659,7 +1779,6 @@
     FB_listenChat();
     FB_listenLB();
     FB_listenWins();
-    FB_listenDuel();
   }
   window.FB_initOnline = FB_initOnline;
 
@@ -1720,7 +1839,6 @@
     var rankName = RANKS[0].name;
     for (var i = 0; i < RANKS.length; i++) if ((player.maxWin || 0) >= RANKS[i].min) rankName = RANKS[i].name;
     $('pmRank').textContent = rankName;
-    $('pmDuel').onclick = function() { $('playerModal').classList.remove('show'); FB_startDuelTo(player.id, player.name); };
     $('pmFriend').onclick = function() { FB_sendFriendRequest(player.id, player.name); $('playerModal').classList.remove('show'); };
     $('pmClose').onclick = function() { $('playerModal').classList.remove('show'); };
     $('playerModal').classList.add('show');
@@ -1745,12 +1863,8 @@
       var el = document.createElement('div');
       el.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#1a0a2e;border:1px solid rgba(168,85,247,0.4);border-radius:14px;font-size:11px;font-weight:700;';
       el.innerHTML = '<span>🤝</span><span style="color:' + (f.color || '#fff') + ';font-weight:900;">' + escapeHtml(f.name) + '</span>';
-      var duelBtn = document.createElement('span');
-      duelBtn.textContent = '⚔️'; duelBtn.style.cssText = 'cursor:pointer;margin-left:4px;font-size:14px;';
-      (function(fr) { duelBtn.addEventListener('click', function(e) { e.stopPropagation(); FB_startDuelTo(fr.id, fr.name); }); })(f);
-      el.appendChild(duelBtn);
       var del = document.createElement('span');
-      del.textContent = '✕'; del.style.cssText = 'cursor:pointer;margin-left:2px;color:#ef4444;font-size:12px;';
+      del.textContent = '✕'; del.style.cssText = 'cursor:pointer;margin-left:4px;color:#ef4444;font-size:12px;';
       (function(fr) { del.addEventListener('click', function(e) { e.stopPropagation(); if (confirm('Удалить из друзей?')) { var FB = window.FB; FB.remove('friends/' + S.playerId + '/' + fr.id); FB.remove('friends/' + fr.id + '/' + S.playerId); } }); })(f);
       el.appendChild(del);
       cont.appendChild(el);
@@ -1917,348 +2031,9 @@
     });
   }
 
-  var duelState = { active: false, currentKey: null, opponent: '' };
-  function FB_startDuel() {
-    if (!FB_check()) { alert('Онлайн не подключён'); return; }
-    if (!friendsList.length) { alert('Добавь друга'); return; }
-    $('pickerTitle').textContent = 'С кем дуэль?';
-    var grid = $('pickerGrid'); grid.innerHTML = '';
-    for (var i = 0; i < friendsList.length; i++) {
-      var f = friendsList[i];
-      var card = document.createElement('div');
-      card.style.cssText = 'padding:12px 8px;border-radius:10px;border:2px solid rgba(168,85,247,0.5);background:linear-gradient(180deg,#1a1a2e,#0a0416);cursor:pointer;text-align:center;font-size:12px;font-weight:900;color:' + (f.color || '#fff') + ';';
-      card.textContent = '🤝 ' + f.name;
-      (function(fr) { card.addEventListener('click', function() { pickerModal.classList.remove('show'); FB_startDuelTo(fr.id, fr.name); }); })(f);
-      grid.appendChild(card);
-    }
-    pickerModal.classList.add('show');
-  }
-  function FB_startDuelTo(oppId, oppName) {
-    if (!FB_check()) return;
-    if (S.balance < S.bet) { alert('Не хватает ВК'); return; }
-    var FB = window.FB;
-    var key = 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-    FB.set('duels/' + key, { from: S.playerId, fromName: S.name || 'Игрок', fromColor: S.nickColor, to: oppId, toName: oppName, bet: S.bet, status: 'pending', t: Date.now() });
-    $('duelStatus').textContent = '⏳ Вызов: ' + oppName;
-    haptic('light');
-    FB.onValue('duels/' + key, function(snap) {
-      var d = snap.val();
-      if (!d) return;
-      if (d.status === 'accepted') {
-        duelState.active = true; duelState.currentKey = key; duelState.opponent = d.toName || oppName;
-        $('duelStatus').textContent = '⚔️ Дуэль! 10 раундов';
-        FB_runDuelRound(key);
-      } else if (d.status === 'declined') { $('duelStatus').textContent = '❌ Отклонён'; }
-    });
-  }
-  function FB_listenDuel() {
-    if (!FB_check()) return;
-    window.FB.onValue('duels', function(snap) {
-      var data = snap.val() || {}, now = Date.now(), incoming = null;
-      for (var k in data) {
-        var d = data[k];
-        if (!d) continue;
-        if (now - (d.t || 0) > 120000) continue;
-        if (d.to === S.playerId && d.status === 'pending') { incoming = { key: k, data: d }; break; }
-      }
-      var inc = $('duelIncoming');
-      if (incoming) {
-        inc.style.display = 'block';
-        $('duelIncomingText').innerHTML = '⚔️ <b style="color:' + (incoming.data.fromColor || '#f472b6') + '">' + escapeHtml(incoming.data.fromName || 'Игрок') + '</b> вызывает!<br>Ставка: ' + incoming.data.bet + ' ВК';
-        $('duelAccept').onclick = function() { FB_acceptDuel(incoming.key, incoming.data); };
-        $('duelDecline').onclick = function() { FB_declineDuel(incoming.key); };
-      } else { inc.style.display = 'none'; }
-    });
-  }
-  function FB_acceptDuel(key, d) {
-    if (!FB_check()) return;
-    var FB = window.FB;
-    if (S.balance < d.bet) { alert('Не хватает ВК'); FB_declineDuel(key); return; }
-    FB.update('duels/' + key, { status: 'accepted', toName: S.name || 'Игрок' });
-    $('duelIncoming').style.display = 'none';
-    duelState.active = true; duelState.currentKey = key; duelState.opponent = d.fromName || 'Игрок';
-    $('duelStatus').textContent = '⚔️ Дуэль! 10 раундов';
-    FB_runDuelRound(key);
-  }
-  function FB_declineDuel(key) {
-    if (!FB_check()) return;
-    window.FB.update('duels/' + key, { status: 'declined' });
-    $('duelIncoming').style.display = 'none';
-  }
-  function FB_runDuelRound(duelKey) {
-    var FB = window.FB;
-    var myTotal = 0, bet = S.bet;
-    for (var i = 0; i < 10; i++) {
-      var r = Math.random(), mult = 0;
-      if (r < 0.005) mult = 2000;
-      else if (r < 0.02) mult = 1000;
-      else if (r < 0.05) mult = 500;
-      else if (r < 0.10) mult = 200;
-      else if (r < 0.20) mult = 10;
-      else if (r < 0.35) mult = 5;
-      myTotal += mult * bet;
-    }
-    $('duelStatus').textContent = '🎰 Твой результат: +' + myTotal.toLocaleString('ru-RU') + ' ВК';
-    FB.update('duels/' + duelKey, { ['score_' + S.playerId]: myTotal });
-    setTimeout(function() {
-      FB.get('duels/' + duelKey).then(function(snap) {
-        var d = snap.val() || {}, scores = {};
-        for (var k in d) if (k.indexOf('score_') === 0) scores[k.slice(6)] = d[k];
-        var keys = Object.keys(scores);
-        if (keys.length >= 2) {
-          var myS = scores[S.playerId] || 0, oppS = 0;
-          for (var i2 = 0; i2 < keys.length; i2++) if (keys[i2] !== S.playerId) oppS = scores[keys[i2]];
-          var win = myS > oppS, draw = myS === oppS;
-          if (win) { S.balance += oppS; render(); bumpBal(); save(); }
-          else if (!draw) { S.balance -= myS; render(); bumpBal(); save(); }
-          $('duelProgress').innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px;margin-top:8px;padding:8px;background:#1a0a2e;border-radius:8px;font-size:11px;"><div style="flex:1;text-align:center;"><div style="color:#d8b4fe;font-weight:700;font-size:10px;">ТЫ</div><div style="color:#fbbf24;font-weight:900;font-size:16px;">' + myS.toLocaleString('ru-RU') + '</div></div><div style="flex:1;text-align:center;"><div style="color:#d8b4fe;font-weight:700;font-size:10px;">' + escapeHtml(duelState.opponent) + '</div><div style="color:#fbbf24;font-weight:900;font-size:16px;">' + oppS.toLocaleString('ru-RU') + '</div></div></div>';
-          if (win) { $('duelStatus').innerHTML = '<span style="color:#4ade80">🏆 ПОБЕДА! +' + oppS.toLocaleString('ru-RU') + '</span>'; confetti(50); sJack(); voiceWin(); }
-          else if (draw) { $('duelStatus').innerHTML = '<span style="color:#fbbf24">🤝 НИЧЬЯ</span>'; sCoin(); }
-          else { $('duelStatus').innerHTML = '<span style="color:#ef4444">😢 Проиграл -' + myS.toLocaleString('ru-RU') + '</span>'; sLose(); voiceLose(); }
-          duelState.active = false;
-          setTimeout(function() { FB.remove('duels/' + duelKey); }, 5000);
-        } else {
-          $('duelStatus').textContent = '⏳ Ждём соперника...';
-          setTimeout(function() { FB_runDuelRound(duelKey); }, 3000);
-        }
-      });
-    }, 2500);
-  }
-  on($('duelBtn'), FB_startDuel);
-
-  var durakState = { gameId: null, myHand: [], opponentHands: {}, field: [], deck: [], kresti: null, myTurn: false };
-  var durakSuits = ['♠','♥','♦','♣'];
-  var durakRanks = ['6','7','8','9','10','J','Q','K','A'];
-  function makeDeck() {
-    var d = [];
-    for (var s = 0; s < 4; s++) for (var r = 0; r < 9; r++) d.push({ rank: durakRanks[r], suit: durakSuits[s] });
-    for (var i = d.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = d[i]; d[i] = d[j]; d[j] = t; }
-    return d;
-  }
-  function cardHtml(card, small, clickable) {
-    if (!card) return '<div class="card' + (small ? ' small' : '') + ' back"></div>';
-    var isRed = card.suit === '♥' || card.suit === '♦';
-    return '<div class="card ' + (isRed ? 'red' : 'black') + (small ? ' small' : '') + (clickable ? ' clickable' : '') + '"><div>' + card.rank + '</div><div class="suit-sym">' + card.suit + '</div></div>';
-  }
-  function openDurak() {
-    if (!FB_check()) { alert('Онлайн не подключён'); return; }
-    showScreen('durak');
-    $('durakLobby').style.display = 'block';
-    $('durakGame').style.display = 'none';
-    var FB = window.FB;
-    FB.get('durak_lobby').then(function(snap) {
-      var lobbies = snap.val() || {};
-      var myLobby = null;
-      var now = Date.now();
-      for (var k in lobbies) {
-        var L = lobbies[k];
-        if (!L) continue;
-        if (now - (L.t || 0) > 300000) { FB.remove('durak_lobby/' + k); continue; }
-        if (L.players && L.players[S.playerId]) myLobby = k;
-        else if (!myLobby && L.status === 'waiting' && Object.keys(L.players || {}).length < 4) myLobby = k;
-      }
-      if (!myLobby) myLobby = 'L_' + Date.now();
-      durakState.gameId = myLobby;
-      FB.update('durak_lobby/' + myLobby, { t: Date.now(), status: 'waiting' });
-      FB.set('durak_lobby/' + myLobby + '/players/' + S.playerId, { name: S.name || 'Игрок', color: S.nickColor, ready: false });
-      FB.onDisconnect('durak_lobby/' + myLobby + '/players/' + S.playerId).remove();
-      listenDurakLobby(myLobby);
-    });
-  }
-  function listenDurakLobby(lobbyId) {
-    var FB = window.FB;
-    FB.onValue('durak_lobby/' + lobbyId, function(snap) {
-      var L = snap.val();
-      if (!L) { $('durakLobby').style.display = 'block'; $('durakGame').style.display = 'none'; return; }
-      if (L.status === 'playing') {
-        $('durakLobby').style.display = 'none';
-        $('durakGame').style.display = 'flex';
-        listenDurakGame(lobbyId);
-      } else {
-        $('durakLobby').style.display = 'block';
-        $('durakGame').style.display = 'none';
-        var pls = L.players || {};
-        var cont = $('durakLobbyPlayers');
-        cont.innerHTML = '';
-        var cnt = 0;
-        for (var id in pls) {
-          var p = pls[id];
-          var el = document.createElement('div');
-          el.className = 'durak-lobby-player' + (p.ready ? ' ready' : '');
-          el.innerHTML = '<span style="color:' + (p.color || '#fff') + ';font-weight:900;">' + escapeHtml(p.name) + '</span>' + (id === S.playerId ? ' <span style="color:#6b7280">(ты)</span>' : '') + (p.ready ? ' ✓' : '');
-          cont.appendChild(el);
-          cnt++;
-        }
-        $('durakLobbyStatus').textContent = 'Игроков: ' + cnt + ' / 4';
-        if (pls[S.playerId] && cnt >= 2) $('durakStartBtn').style.display = 'block';
-      }
-    });
-  }
-  function startDurakGame() {
-    if (!FB_check()) return;
-    var FB = window.FB;
-    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
-      var L = snap.val() || {};
-      var players = L.players || {};
-      var ids = Object.keys(players);
-      if (ids.length < 2) { alert('Нужно минимум 2 игрока'); return; }
-      var deck = makeDeck();
-      var kresti = deck[deck.length - 1];
-      var hands = {};
-      for (var i = 0; i < ids.length; i++) hands[ids[i]] = deck.splice(0, 6);
-      FB.update('durak_lobby/' + durakState.gameId, { status: 'playing', deck: deck, kresti: kresti, hands: hands, field: [], attackerIdx: 0, order: ids, t: Date.now() });
-    });
-  }
-  function listenDurakGame(gameId) {
-    var FB = window.FB;
-    FB.onValue('durak_lobby/' + gameId, function(snap) {
-      var G = snap.val();
-      if (!G || G.status !== 'playing') return;
-      durakState.myHand = (G.hands && G.hands[S.playerId]) || [];
-      durakState.field = G.field || [];
-      durakState.deck = G.deck || [];
-      durakState.kresti = G.kresti;
-      durakState.opponentHands = {};
-      for (var id in (G.hands || {})) if (id !== S.playerId) durakState.opponentHands[id] = G.hands[id];
-      durakState.myTurn = G.order && G.order[G.attackerIdx] === S.playerId;
-      renderDurak(G);
-    });
-  }
-  function renderDurak(G) {
-    var order = G.order || [];
-    var attackerId = order[G.attackerIdx];
-    var attackerName = (G.players && G.players[attackerId] && G.players[attackerId].name) || 'Игрок';
-    $('durakKresti').textContent = durakState.kresti ? durakState.kresti.rank + durakState.kresti.suit : '?';
-    $('durakDeck').textContent = durakState.deck.length;
-    var fieldCont = $('durakField');
-    fieldCont.innerHTML = '';
-    for (var i = 0; i < durakState.field.length; i++) {
-      var pair = durakState.field[i];
-      var wrap = document.createElement('div');
-      wrap.style.cssText = 'display:flex;gap:2px;';
-      wrap.innerHTML = cardHtml(pair.attack, true, false) + (pair.defend ? cardHtml(pair.defend, true, false) : '');
-      fieldCont.appendChild(wrap);
-    }
-    var meCont = $('durakMe');
-    meCont.innerHTML = '';
-    for (var j = 0; j < durakState.myHand.length; j++) {
-      var c = durakState.myHand[j];
-      var el = document.createElement('div');
-      el.innerHTML = cardHtml(c, false, durakState.myTurn);
-      var cardEl = el.firstChild;
-      if (durakState.myTurn) { (function(card) { cardEl.addEventListener('click', function() { durakPlayCard(card); }); })(c); }
-      meCont.appendChild(cardEl);
-    }
-    var oppsCont = $('durakOpps');
-    oppsCont.innerHTML = '';
-    for (var k in durakState.opponentHands) {
-      var h = durakState.opponentHands[k] || [];
-      var name = (G.players && G.players[k] && G.players[k].name) || 'Враг';
-      var color = (G.players && G.players[k] && G.players[k].color) || '#f472b6';
-      var row = document.createElement('div');
-      row.style.cssText = 'margin-bottom:6px;';
-      row.innerHTML = '<div style="font-size:10px;color:' + color + ';font-weight:900;margin-bottom:4px;">' + escapeHtml(name) + ' (' + h.length + ')</div><div style="display:flex;gap:2px;flex-wrap:wrap;">' + h.map(function() { return '<div class="card small back"></div>'; }).join('') + '</div>';
-      oppsCont.appendChild(row);
-    }
-    var act = $('durakActions');
-    act.innerHTML = '';
-    if (durakState.myTurn) {
-      var pass = document.createElement('button');
-      pass.className = 'durak-pass';
-      pass.textContent = '✋ БИТО';
-      pass.onclick = function() { durakPass(); };
-      act.appendChild(pass);
-      if (durakState.field.length > 0) {
-        var take = document.createElement('button');
-        take.className = 'durak-take';
-        take.textContent = '🖐 ВЗЯТЬ';
-        take.onclick = function() { durakTake(); };
-        act.appendChild(take);
-      }
-    } else {
-      act.innerHTML = '<div style="text-align:center;color:#d8b4fe;font-size:13px;width:100%;padding:10px;">Ход: ' + escapeHtml(attackerName) + '</div>';
-    }
-  }
-  function durakPlayCard(card) {
-    if (!durakState.myTurn || !FB_check()) return;
-    var FB = window.FB;
-    var newField = durakState.field.concat([{ attack: card, defend: null }]);
-    var newHand = durakState.myHand.filter(function(c) { return !(c.rank === card.rank && c.suit === card.suit); });
-    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
-      var G = snap.val();
-      var order = G.order || [];
-      var nextIdx = (G.attackerIdx + 1) % order.length;
-      FB.update('durak_lobby/' + durakState.gameId, { field: newField, ['hands/' + S.playerId]: newHand, attackerIdx: nextIdx });
-    });
-    sTick(); haptic('light');
-  }
-  function durakPass() {
-    if (!FB_check()) return;
-    var FB = window.FB;
-    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
-      var G = snap.val() || {};
-      var order = G.order || [];
-      var nextIdx = (G.attackerIdx + 1) % order.length;
-      FB.update('durak_lobby/' + durakState.gameId, { field: [], attackerIdx: nextIdx });
-    });
-    sCoin();
-  }
-  function durakTake() {
-    if (!FB_check()) return;
-    var FB = window.FB;
-    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
-      var G = snap.val() || {};
-      var field = G.field || [];
-      var add = [];
-      for (var i = 0; i < field.length; i++) { if (field[i].attack) add.push(field[i].attack); if (field[i].defend) add.push(field[i].defend); }
-      var myHand = (G.hands && G.hands[S.playerId]) || [];
-      FB.update('durak_lobby/' + durakState.gameId, { field: [], ['hands/' + S.playerId]: myHand.concat(add) });
-    });
-    sLose();
-  }
-  on($('durakBtn'), openDurak);
-  on($('durakExit'), function() {
-    if (durakState.gameId && FB_check()) window.FB.remove('durak_lobby/' + durakState.gameId + '/players/' + S.playerId);
-    showScreen('game');
-    switchPage('online');
-  });
-  on($('durakReadyBtn'), function() {
-    if (!FB_check() || !durakState.gameId) return;
-    window.FB.update('durak_lobby/' + durakState.gameId + '/players/' + S.playerId, { ready: true });
-  });
-  on($('durakStartBtn'), startDurakGame);
-
-  var feedTrack = $('feedTrack');
-  var feedX = 0, lastFeedTime = 0, feedWidth = 0;
-  function feedLoop(now) {
-    if (!feedTrack) return;
-    var dt = Math.min(50, now - lastFeedTime); lastFeedTime = now;
-    feedWidth = feedTrack.scrollWidth / 2;
-    if (feedWidth > 0) {
-      feedX -= 0.03 * dt;
-      if (feedX <= -feedWidth) feedX += feedWidth;
-      feedTrack.style.transform = 'translate3d(' + feedX + 'px,0,0)';
-    }
-    requestAnimationFrame(feedLoop);
-  }
-  if (feedTrack) {
-    var fakeNames = ['Вася228','Kolya_X','Олег','SlavaPro','Дмитрий','Максим2000','Сергей','Роман','НикПро','Кирилл'];
-    var fakeWins = [{s:'🍒',m:3},{s:'🍋',m:5},{s:'🔔',m:8},{s:'💎',m:15},{s:'7️⃣',m:30},{s:'🗿',m:100}];
-    for (var fi = 0; fi < 8; fi++) {
-      var n = fakeNames[(Math.random() * fakeNames.length) | 0];
-      var w = fakeWins[(Math.random() * fakeWins.length) | 0];
-      pushFeed(n, w.s, w.m, BETS[(Math.random() * 5) | 0]);
-    }
-    requestAnimationFrame(function(t) { lastFeedTime = t; requestAnimationFrame(feedLoop); });
-    (function sched() {
-      setTimeout(function() {
-        var n2 = fakeNames[(Math.random() * fakeNames.length) | 0];
-        var w2 = fakeWins[(Math.random() * fakeWins.length) | 0];
-        pushFeed(n2, w2.s, w2.m, BETS[(Math.random() * 5) | 0]);
-        sched();
-      }, 3000 + Math.random() * 3000);
-    })();
-  }
+  /* ЗАГЛУШКИ ДУЭЛИ И ДУРАК — не активируются */
+  on($('duelBtn'), function() { alert('⚔️ Дуэли скоро! Следи за обновлениями.'); });
+  on($('durakBtn'), function() { alert('🎴 Дурак скоро! Следи за обновлениями.'); });
 
   var origSwitch = switchPage;
   window.switchPage = function(name) {
