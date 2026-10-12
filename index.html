@@ -1893,17 +1893,16 @@
     $('upgBtn').disabled = true;
     $('upgResult').className = 'result';
     $('upgResult').textContent = '';
-    var success = Math.random() * 100 <= chance;
+        var success = Math.random() * 100 <= chance;
     var extraSpins = 6 + Math.floor(Math.random() * 4);
-    // Стрелка фиксирована сверху (указывает на -90°). Крутим колесо так, чтобы под стрелкой оказался нужный сектор.
-    // Хотим, чтобы под стрелкой был сектор chance или 100-chance
-    // Позиция сектора = угол поворота колеса + положение сектора.
-    // Проще: конечная позиция колеса = -(сектор_цель_угол)
+    // Определяем границы сектора зелёного
+    var startA = -Math.PI / 2;
+    var endA = startA + (chance / 100) * Math.PI * 2;
     var targetSectorAngle;
     if (success) {
-      targetSectorAngle = startA + Math.random() * (endA - startA); // внутри зелёного
+      targetSectorAngle = startA + Math.random() * (endA - startA);
     } else {
-      targetSectorAngle = endA + Math.random() * (startA + Math.PI * 2 - endA); // внутри красного
+      targetSectorAngle = endA + Math.random() * (startA + Math.PI * 2 - endA);
     }
     // начальное положение колеса = upgWheelAngle
     // нам нужно, чтобы после поворота targetSectorAngle совпал с углом стрелки (-90° = -Math.PI/2)
