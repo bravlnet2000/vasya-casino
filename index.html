@@ -1833,7 +1833,7 @@
 
   console.log('ВАСЯ ДРОП: часть 3 загружена');
   
-  /* ============================================
+ /* ============================================
      FIREBASE ОНЛАЙН
   ============================================ */
   var FB_state = { online: false, init: false };
@@ -1874,7 +1874,7 @@
   function FB_setOnline() {
     if (!FB_check()) return;
     var FB = window.FB;
-    var userRef = FB.ref(FB.db, 'online/' + S.playerId);
+    var userRef = FB.ref('online/' + S.playerId);
     FB.set(userRef, {
       name: S.name || 'Игрок',
       balance: S.balance,
@@ -1886,7 +1886,7 @@
       color: S.nickColor,
       lastSeen: FB.serverTimestamp()
     });
-    FB.onDisconnect(userRef).remove();
+    userRef.onDisconnect().remove();
     FB_state.online = true;
   }
   window.FB_setOnline = FB_setOnline;
@@ -1895,7 +1895,7 @@
   function FB_listenPlayers() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.onValue(FB.ref(FB.db, 'online'), function(snap) {
+    FB.onValue(FB.ref('online'), function(snap) {
       var data = snap.val() || {}, arr = [], now = Date.now();
       for (var id in data) {
         var p = data[id];
@@ -1920,15 +1920,12 @@
       var dot = '<span style="width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80"></span>';
       el.innerHTML = dot + '<span style="color:' + (p.color || '#fff') + ';font-weight:900;">' + escapeHtml(p.name) + '</span>' + (p.me ? ' <span style="color:#6b7280">(ты)</span>' : '');
       if (!p.me) {
-        (function(pl) {
-          el.addEventListener('click', function() { showPlayerModal(pl); });
-        })(p);
+        (function(pl) { el.addEventListener('click', function() { showPlayerModal(pl); }); })(p);
       }
       cont.appendChild(el);
     }
   }
 
-  /* МОДАЛКА ПРОФИЛЯ ИГРОКА */
   function showPlayerModal(player) {
     $('pmAvatar').textContent = '🎩';
     $('pmName').textContent = player.name || 'Игрок';
@@ -1939,7 +1936,6 @@
     $('pmJack').textContent = player.jackpots || 0;
     $('pmMax').textContent = (player.maxWin || 0).toLocaleString('ru-RU');
     $('pmCases').textContent = player.casesOpened || 0;
-    // ранг
     var rankName = RANKS[0].name;
     for (var i = 0; i < RANKS.length; i++) if ((player.maxWin || 0) >= RANKS[i].min) rankName = RANKS[i].name;
     $('pmRank').textContent = rankName;
@@ -1956,11 +1952,10 @@
   }
   window.showPlayerModal = showPlayerModal;
 
-  /* ДРУЗЬЯ — С ПОДТВЕРЖДЕНИЕМ */
   function FB_listenFriends() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.onValue(FB.ref(FB.db, 'friends/' + S.playerId), function(snap) {
+    FB.onValue(FB.ref('friends/' + S.playerId), function(snap) {
       var d = snap.val() || {};
       friendsList = [];
       for (var id in d) if (d[id] && d[id].name) friendsList.push({ id: id, name: d[id].name, color: d[id].color || '#fbbf24' });
@@ -1982,7 +1977,7 @@
       el.appendChild(duelBtn);
       var del = document.createElement('span');
       del.textContent = '✕'; del.style.cssText = 'cursor:pointer;margin-left:2px;color:#ef4444;font-size:12px;';
-      (function(fr) { del.addEventListener('click', function(e) { e.stopPropagation(); if (confirm('Удалить из друзей?')) { var FB = window.FB; FB.remove(FB.ref(FB.db, 'friends/' + S.playerId + '/' + fr.id)); FB.remove(FB.ref(FB.db, 'friends/' + fr.id + '/' + S.playerId)); } }); })(f);
+      (function(fr) { del.addEventListener('click', function(e) { e.stopPropagation(); if (confirm('Удалить из друзей?')) { var FB = window.FB; FB.remove(FB.ref('friends/' + S.playerId + '/' + fr.id)); FB.remove(FB.ref('friends/' + fr.id + '/' + S.playerId)); } }); })(f);
       el.appendChild(del);
       cont.appendChild(el);
     }
@@ -1991,7 +1986,7 @@
     if (!FB_check() || !toId) return;
     if (toId === S.playerId) { alert('Это ты'); return; }
     var FB = window.FB;
-    FB.set(FB.ref(FB.db, 'friend_requests/' + toId + '/' + S.playerId), {
+    FB.set(FB.ref('friend_requests/' + toId + '/' + S.playerId), {
       fromId: S.playerId,
       fromName: S.name || 'Игрок',
       fromColor: S.nickColor,
@@ -2003,7 +1998,7 @@
   function FB_listenRequests() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.onValue(FB.ref(FB.db, 'friend_requests/' + S.playerId), function(snap) {
+    FB.onValue(FB.ref('friend_requests/' + S.playerId), function(snap) {
       var d = snap.val() || {};
       incomingRequests = [];
       for (var id in d) if (d[id]) incomingRequests.push({ id: id, name: d[id].fromName || 'Игрок', color: d[id].fromColor || '#fbbf24' });
@@ -2032,23 +2027,22 @@
   function FB_acceptRequest(fromId, fromName, fromColor) {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.set(FB.ref(FB.db, 'friends/' + S.playerId + '/' + fromId), { name: fromName, color: fromColor });
-    FB.set(FB.ref(FB.db, 'friends/' + fromId + '/' + S.playerId), { name: S.name || 'Игрок', color: S.nickColor });
-    FB.remove(FB.ref(FB.db, 'friend_requests/' + S.playerId + '/' + fromId));
+    FB.set(FB.ref('friends/' + S.playerId + '/' + fromId), { name: fromName, color: fromColor });
+    FB.set(FB.ref('friends/' + fromId + '/' + S.playerId), { name: S.name || 'Игрок', color: S.nickColor });
+    FB.remove(FB.ref('friend_requests/' + S.playerId + '/' + fromId));
     sCoin(); haptic('success');
   }
   function FB_declineRequest(fromId) {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.remove(FB.ref(FB.db, 'friend_requests/' + S.playerId + '/' + fromId));
+    FB.remove(FB.ref('friend_requests/' + S.playerId + '/' + fromId));
   }
 
-  /* ЧАТ */
   function FB_listenChat() {
     if (!FB_check() || chatListenerAttached) return;
     chatListenerAttached = true;
     var FB = window.FB;
-    FB.onValue(FB.query(FB.ref(FB.db, 'chat'), FB.limitToLast(40)), function(snap) {
+    FB.onValue(FB.query(FB.ref('chat'), FB.limitToLast(40)), function(snap) {
       var data = snap.val() || {};
       var box = $('chatBox'); if (!box) return;
       box.innerHTML = '';
@@ -2060,7 +2054,6 @@
         el.style.cssText = 'font-size:11px;padding:5px 9px;border-radius:9px;background:' + (mine ? 'linear-gradient(135deg,#7c2d12,#b45309)' : '#1a0a2e') + ';color:' + (mine ? '#fff' : '#d1d5db') + ';max-width:92%;word-wrap:break-word;line-height:1.35;' + (mine ? 'align-self:flex-end;' : '');
         var time = new Date(m.t || Date.now());
         var hh = ('0' + time.getHours()).slice(-2), mm = ('0' + time.getMinutes()).slice(-2);
-        // ранг
         var playerRank = RANKS[0].name;
         if (m.maxWin) for (var r = 0; r < RANKS.length; r++) if (m.maxWin >= RANKS[r].min) playerRank = RANKS[r].name;
         var rankShort = playerRank.split(' ')[0] || '🥉';
@@ -2070,9 +2063,8 @@
         if (!mine) {
           (function(msg) {
             nameSpan.addEventListener('click', function() {
-              // ищем данные игрока в онлайне
               var FB2 = window.FB;
-              FB2.get(FB2.ref(FB2.db, 'online/' + msg.pid)).then(function(s) {
+              FB2.get(FB2.ref('online/' + msg.pid)).then(function(s) {
                 var p = s.val() || {};
                 showPlayerModal({ id: msg.pid, name: p.name || msg.name, balance: p.balance || 0, color: p.color || msg.color, maxWin: p.maxWin || 0, wins: p.wins || 0, spins: p.spins || 0, jackpots: p.jackpots || 0, casesOpened: p.casesOpened || 0 });
               });
@@ -2099,7 +2091,7 @@
     var text = (inp.value || '').trim().slice(0, 80);
     if (!text) return;
     var FB = window.FB;
-    FB.push(FB.ref(FB.db, 'chat'), {
+    FB.push(FB.ref('chat'), {
       pid: S.playerId,
       name: S.name || 'Игрок',
       color: S.nickColor,
@@ -2113,11 +2105,10 @@
   on($('chatSend'), FB_sendChat);
   if ($('chatInput')) $('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') FB_sendChat(); });
 
-  /* ЛИДЕРБОРД */
   function FB_listenLB() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.onValue(FB.query(FB.ref(FB.db, 'leaderboard'), FB.orderByChild('maxWin'), FB.limitToLast(10)), function(snap) {
+    FB.onValue(FB.query(FB.ref('leaderboard'), FB.orderByChild('maxWin'), FB.limitToLast(10)), function(snap) {
       var data = snap.val() || {}, arr = [];
       for (var k in data) arr.push(data[k]);
       arr.sort(function(a, b) { return (b.maxWin || 0) - (a.maxWin || 0); });
@@ -2138,22 +2129,21 @@
   function FB_updateLB() {
     if (!FB_check() || !S.maxWin) return;
     var FB = window.FB;
-    FB.set(FB.ref(FB.db, 'leaderboard/' + S.playerId), { name: S.name || 'Игрок', maxWin: S.maxWin, color: S.nickColor, t: Date.now() });
+    FB.set(FB.ref('leaderboard/' + S.playerId), { name: S.name || 'Игрок', maxWin: S.maxWin, color: S.nickColor, t: Date.now() });
   }
   window.FB_updateLB = FB_updateLB;
 
-  /* ЛЕНТА ПОБЕД */
   function FB_pushWin(sym, mult, bet, type) {
     if (!FB_check() || !mult || mult < 5) return;
     var FB = window.FB;
-    FB.push(FB.ref(FB.db, 'wins'), { pid: S.playerId, name: S.name || 'Игрок', color: S.nickColor, sym: sym, mult: mult, payout: bet * mult, type: type || 'win', t: Date.now() });
+    FB.push(FB.ref('wins'), { pid: S.playerId, name: S.name || 'Игрок', color: S.nickColor, sym: sym, mult: mult, payout: bet * mult, type: type || 'win', t: Date.now() });
     if (S.maxWin > 0) FB_updateLB();
   }
   window.FB_pushWin = FB_pushWin;
   function FB_listenWins() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.onValue(FB.query(FB.ref(FB.db, 'wins'), FB.limitToLast(20)), function(snap) {
+    FB.onValue(FB.query(FB.ref('wins'), FB.limitToLast(20)), function(snap) {
       var data = snap.val() || {}, arr = [];
       for (var k in data) arr.push(data[k]);
       arr.sort(function(a, b) { return (b.t || 0) - (a.t || 0); });
@@ -2171,7 +2161,6 @@
     });
   }
 
-  /* ДУЭЛИ */
   var duelState = { active: false, currentKey: null, opponent: '' };
   function FB_startDuel() {
     if (!FB_check()) { alert('Онлайн не подключён'); return; }
@@ -2193,14 +2182,14 @@
     if (S.balance < S.bet) { alert('Не хватает ВК. Ставка: ' + S.bet); return; }
     var FB = window.FB;
     var key = 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-    FB.set(FB.ref(FB.db, 'duels/' + key), {
+    FB.set(FB.ref('duels/' + key), {
       from: S.playerId, fromName: S.name || 'Игрок', fromColor: S.nickColor,
       to: oppId, toName: oppName,
       bet: S.bet, status: 'pending', t: Date.now()
     });
     $('duelStatus').textContent = '⏳ Вызов отправлен: ' + oppName;
     haptic('light');
-    FB.onValue(FB.ref(FB.db, 'duels/' + key), function(snap) {
+    FB.onValue(FB.ref('duels/' + key), function(snap) {
       var d = snap.val();
       if (!d) return;
       if (d.status === 'accepted') {
@@ -2215,7 +2204,7 @@
   function FB_listenDuel() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.onValue(FB.ref(FB.db, 'duels'), function(snap) {
+    FB.onValue(FB.ref('duels'), function(snap) {
       var data = snap.val() || {}, now = Date.now(), incoming = null;
       for (var k in data) {
         var d = data[k];
@@ -2238,7 +2227,7 @@
     if (!FB_check()) return;
     var FB = window.FB;
     if (S.balance < d.bet) { alert('Не хватает ВК'); FB_declineDuel(key); return; }
-    FB.update(FB.ref(FB.db, 'duels/' + key), { status: 'accepted', toName: S.name || 'Игрок' });
+    FB.update(FB.ref('duels/' + key), { status: 'accepted', toName: S.name || 'Игрок' });
     $('duelIncoming').style.display = 'none';
     duelState.active = true; duelState.currentKey = key; duelState.opponent = d.fromName || 'Игрок';
     $('duelStatus').textContent = '⚔️ Дуэль! 10 раундов';
@@ -2247,13 +2236,12 @@
   function FB_declineDuel(key) {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.update(FB.ref(FB.db, 'duels/' + key), { status: 'declined' });
+    FB.update(FB.ref('duels/' + key), { status: 'declined' });
     $('duelIncoming').style.display = 'none';
   }
   function FB_runDuelRound(duelKey) {
     var FB = window.FB;
     var myTotal = 0, bet = S.bet;
-    // дуэльный слот: шансы чуть выше
     for (var i = 0; i < 10; i++) {
       var r = Math.random(), mult = 0;
       if (r < 0.005) mult = 2000;
@@ -2265,9 +2253,9 @@
       myTotal += mult * bet;
     }
     $('duelStatus').textContent = '🎰 Твой результат: +' + myTotal.toLocaleString('ru-RU') + ' ВК';
-    FB.update(FB.ref(FB.db, 'duels/' + duelKey), { ['score_' + S.playerId]: myTotal });
+    FB.update(FB.ref('duels/' + duelKey), { ['score_' + S.playerId]: myTotal });
     setTimeout(function() {
-      FB.get(FB.ref(FB.db, 'duels/' + duelKey)).then(function(snap) {
+      FB.get(FB.ref('duels/' + duelKey)).then(function(snap) {
         var d = snap.val() || {}, scores = {};
         for (var k in d) if (k.indexOf('score_') === 0) scores[k.slice(6)] = d[k];
         var keys = Object.keys(scores);
@@ -2282,7 +2270,7 @@
           else if (draw) { $('duelStatus').innerHTML = '<span style="color:#fbbf24">🤝 НИЧЬЯ</span>'; sCoin(); }
           else { $('duelStatus').innerHTML = '<span style="color:#ef4444">😢 Проиграл -' + myS.toLocaleString('ru-RU') + '</span>'; sLose(); voiceLose(); }
           duelState.active = false;
-          setTimeout(function() { FB.remove(FB.ref(FB.db, 'duels/' + duelKey)); }, 5000);
+          setTimeout(function() { FB.remove(FB.ref('duels/' + duelKey)); }, 5000);
         } else {
           $('duelStatus').textContent = '⏳ Ждём соперника...';
           setTimeout(function() { FB_runDuelRound(duelKey); }, 3000);
