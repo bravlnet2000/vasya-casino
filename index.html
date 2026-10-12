@@ -6,22 +6,49 @@
 <meta name="theme-color" content="#05030f">
 <title>ВАСЯ ДРОП</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, get, push, onValue, onDisconnect, serverTimestamp, query, orderByChild, limitToLast, remove, update }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyAa_yNYHP6e1omV1X_aDWmT7jYu3iPh--o",
-    authDomain: "vasya-casino.firebaseapp.com",
-    databaseURL: "https://vasya-casino-default-rtdb.firebaseio.com",
-    projectId: "vasya-casino",
-    storageBucket: "vasya-casino.firebasestorage.app",
-    messagingSenderId: "497507737017",
-    appId: "1:497507737017:web:27a19152bb74956a5aaa68"
-  };
-  const fbApp = initializeApp(firebaseConfig);
-  const db = getDatabase(fbApp);
-  window.FB = { db, ref, set, get, push, onValue, onDisconnect, serverTimestamp, query, orderByChild, limitToLast, remove, update, ready: true };
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  window.FB = { ready: false };
+  function initFB() {
+    if (typeof firebase === 'undefined') { setTimeout(initFB, 300); return; }
+    try {
+      firebase.initializeApp({
+        apiKey: "AIzaSyAa_yNYHP6e1omV1X_aDWmT7jYu3iPh--o",
+        authDomain: "vasya-casino.firebaseapp.com",
+        databaseURL: "https://vasya-casino-default-rtdb.firebaseio.com",
+        projectId: "vasya-casino",
+        storageBucket: "vasya-casino.firebasestorage.app",
+        messagingSenderId: "497507737017",
+        appId: "1:497507737017:web:27a19152bb74956a5aaa68"
+      });
+      var db = firebase.database();
+      window.FB = {
+        db: db,
+        ref: function(path) { return db.ref(path); },
+        set: function(path, v) { return db.ref(path).set(v); },
+        get: function(path) { return db.ref(path).once('value'); },
+        push: function(path, v) { return db.ref(path).push(v); },
+        onValue: function(path, cb) { return db.ref(path).on('value', cb); },
+        update: function(path, v) { return db.ref(path).update(v); },
+        remove: function(path) { return db.ref(path).remove(); },
+        onDisconnect: function(path) { return db.ref(path).onDisconnect(); },
+        query: function(path, orderBy, limit) {
+          var q = db.ref(path);
+          if (orderBy) q = q.orderByChild(orderBy);
+          if (limit) q = q.limitToLast(limit);
+          return q;
+        },
+        ready: true
+      };
+      window.dispatchEvent(new Event('fb-ready'));
+      console.log('Firebase готов');
+    } catch(e) {
+      console.log('Firebase error:', e);
+      setTimeout(initFB, 1000);
+    }
+  }
+  setTimeout(initFB, 200);
 </script>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
@@ -179,7 +206,6 @@
   .risk-row .risky { background: linear-gradient(180deg, #f472b6, #dc2626); color: #fff; box-shadow: 0 4px 0 #7f1d1d; }
   .chat-name-link { cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
   .hidden { display: none !important; }
-  /* ДУРАК */
   .durak-table { position: relative; width: 100%; min-height: 300px; background: radial-gradient(ellipse at center, #1a4a2e 0%, #0a1a10 100%); border: 3px solid #7c2d12; border-radius: 20px; padding: 12px; margin-bottom: 10px; }
   .durak-opp { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; min-height: 60px; margin-bottom: 12px; }
   .durak-field { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 100px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 12px; }
@@ -236,7 +262,6 @@
 
     <div class="pages-container">
 
-      <!-- СЛОТ -->
       <div class="page active" id="page-slot">
         <div class="page-title">🎰 ВАСЯ ДРОП 🎰</div>
         <div class="page-subtitle">Супер-Васянский ×2000</div>
@@ -265,7 +290,6 @@
         <div class="stats"><span>Побед: <b id="winsEl">0</b></span><span>Спинов: <b id="spinsEl">0</b></span><span>Джекпотов: <b id="jpEl">0</b></span></div>
       </div>
 
-      <!-- КЕЙС -->
       <div class="page" id="page-case">
         <div class="page-title">🎖 ОСЕННИЙ ПРИЗЫВ</div>
         <div class="page-subtitle">Собери военный билет</div>
@@ -286,7 +310,6 @@
         </div>
       </div>
 
-      <!-- АРЕНА -->
       <div class="page" id="page-arena">
         <div class="page-title">💣 АРЕНА АЗАРТА</div>
         <div class="page-subtitle">Выбери свою игру</div>
@@ -307,7 +330,6 @@
         </div>
       </div>
 
-      <!-- АПГРЕЙД -->
       <div class="page" id="page-upgrade">
         <div class="page-title">⬆️ АПГРЕЙД</div>
         <div class="page-subtitle">Крути колесо фортуны</div>
@@ -334,7 +356,6 @@
         </div>
       </div>
 
-      <!-- ИНВЕНТАРЬ -->
       <div class="page" id="page-inv">
         <div class="page-title">🎒 ИНВЕНТАРЬ</div>
         <div class="page-subtitle">Твои армейские трофеи</div>
@@ -349,7 +370,6 @@
         </div>
       </div>
 
-      <!-- ОНЛАЙН -->
       <div class="page" id="page-online">
         <div class="page-title">🌐 ОНЛАЙН</div>
         <div class="page-subtitle" id="onlineStatus">Подключение...</div>
@@ -389,7 +409,7 @@
           </div>
           <div class="machine" style="padding: 12px; margin-bottom: 10px;">
             <div style="font-size: 12px; color:var(--accent2); font-weight: 900; margin-bottom: 8px;">🎴 ДУРАК</div>
-            <div style="font-size: 11px; color:#d8b4fe; text-align: center; padding: 4px 0 10px;">Онлайн • 2-4 игрока • подкидной / переводной</div>
+            <div style="font-size: 11px; color:#d8b4fe; text-align: center; padding: 4px 0 10px;">Онлайн • 2-4 игрока</div>
             <button type="button" class="spin-btn" id="durakBtn" style="margin: 0 0 8px 0;">🎴 ИГРАТЬ В ДУРАКА</button>
             <div id="durakStatus" style="margin-top: 10px; text-align: center; font-size: 12px; color: var(--accent2); font-weight: 700; min-height: 18px;"></div>
           </div>
@@ -409,7 +429,6 @@
         <div id="onlineOffline" style="text-align: center; padding: 40px 20px; color: #6b7280; font-size: 13px;">Подключение к Firebase...</div>
       </div>
 
-      <!-- ПРОФИЛЬ -->
       <div class="page" id="page-profile">
         <div class="page-title">👤 ПРОФИЛЬ</div>
         <div class="page-subtitle">Твой путь Васьки</div>
@@ -482,7 +501,6 @@
   </div>
 </div>
 
-<!-- ДУРАК ЭКРАН -->
 <div class="screen" id="screen-durak">
   <div style="padding: 12px; height: 100%; display:flex; flex-direction:column; width: 100%; max-width: 480px; margin: 0 auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
@@ -643,7 +661,6 @@
   var $ = function(id) { return document.getElementById(id); };
   var on = function(el, fn) { if (el) el.addEventListener('click', function(e) { e.preventDefault(); fn(e); }); };
 
-  /* ЭКРАНЫ */
   var screens = { start: $('screen-start'), choice: $('screen-choice'), game: $('screen-game'), durak: $('screen-durak') };
   function showScreen(name) { for (var k in screens) if (screens[k]) screens[k].classList.toggle('active', k === name); }
   on($('becomeBtn'), function() { showScreen('choice'); haptic('light'); });
@@ -667,9 +684,8 @@
     (function(btn) { btn.addEventListener('click', function() { switchPage(btn.dataset.page); haptic('light'); }); })(allNav[nn]);
   }
 
-  /* КОНСТАНТЫ */
   var BETS = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000];
-  var S_KEY = 'vasyadrop_v5';
+  var S_KEY = 'vasyadrop_v6';
   var CASE_PRICE = 100;
   var DAILY_AMOUNT = 500, DAILY_CD = 24 * 60 * 60 * 1000;
   var AD_REWARD = 500;
@@ -784,7 +800,6 @@
   function applySkin() { document.body.className = 'skin-' + (S.activeSkin || 'classic'); }
   applySkin();
 
-  /* ЗВУК */
   var ac = null, musicOn = false, musicStep = 0, musicNext = 0, musicMode = 'calm';
   var musicGain = null, musicTargetVol = 0;
   function ensureAC() {
@@ -842,7 +857,6 @@
   function stopMusic() { musicTargetVol = 0; }
   function setMusicMode(m) { if (musicMode === m) return; musicMode = m; musicStep = 0; }
 
-  /* УТИЛИТЫ */
   function randSym() {
     var tot = 0;
     for (var w = 0; w < WEIGHTS.length; w++) tot += WEIGHTS[w];
@@ -893,7 +907,6 @@
   }
   function shakeScreen() { document.body.classList.add('shake-all'); setTimeout(function() { document.body.classList.remove('shake-all'); }, 500); }
 
-  /* DOM */
   var balEl = $('balEl'), balVal = $('balVal'), betVal = $('betVal');
   var winsEl = $('winsEl'), spinsEl = $('spinsEl'), jpEl = $('jpEl');
   var sndBtn = $('sndBtn'), modal = $('modal');
@@ -907,7 +920,6 @@
   var stripEls = [reels[0].querySelector('.strip'), reels[1].querySelector('.strip'), reels[2].querySelector('.strip')];
   var spinning = false, caseSpinning = false, currentItem = null;
 
-  /* RENDER */
   var lastBalance = -1;
   function render() {
     if (S.balance !== lastBalance) { balVal.textContent = S.balance.toLocaleString('ru-RU'); lastBalance = S.balance; }
@@ -924,7 +936,6 @@
   function addMoney(a) { S.balance += a; render(); bumpBal(); save(); checkAchievements(); }
   window.addMoney = addMoney;
 
-  /* ДОСТИЖЕНИЯ */
   function checkAchievements() {
     var changed = false;
     for (var i = 0; i < ACHIEVEMENTS.length; i++) {
@@ -960,7 +971,6 @@
     if (achCountEl) achCountEl.textContent = S.unlockedAch.length + ' / ' + ACHIEVEMENTS.length;
   }
 
-  /* ПРОФИЛЬ */
   function getRankName() {
     var rank = RANKS[0].name;
     for (var i = 0; i < RANKS.length; i++) if (S.maxWin >= RANKS[i].min) rank = RANKS[i].name;
@@ -979,7 +989,6 @@
   }
   window.renderProfile = renderProfile;
 
-  /* МЕНЮ */
   on(sndBtn, function() {
     S.sound = !S.sound;
     render(); save();
@@ -1079,7 +1088,6 @@
   on($('promoBtn'), tryPromo);
   if ($('promoInput')) $('promoInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') tryPromo(); });
 
-  /* СКИНЫ */
   var pendingSkin = null;
   function renderSkins() {
     var grid = $('skinGrid'); if (!grid) return;
@@ -1123,7 +1131,6 @@
     }
   });
 
-  /* ИНВЕНТАРЬ */
   function renderInv() {
     if (!invGrid) return;
     invGrid.innerHTML = '';
@@ -1194,7 +1201,6 @@
   }
   window.pushFeed = pushFeed;
 
-  /* СЛОТ */
   function outcome(risky) {
     var r = Math.random();
     if (risky) {
@@ -1312,7 +1318,6 @@
   on($('bMinus'), function() { var i = BETS.indexOf(S.bet); if (i > 0) { S.bet = BETS[i-1]; render(); save(); } });
   on($('bPlus'), function() { var i = BETS.indexOf(S.bet); if (i >= 0 && i < BETS.length-1) { S.bet = BETS[i+1]; render(); save(); } });
 
-  /* КЕЙС */
   function openCase(fast) {
     if (caseSpinning) return;
     if (S.balance < CASE_PRICE) { modal.classList.add('show'); return; }
@@ -1388,7 +1393,6 @@
   }
   on($('caseSellDupesBtn'), sellDupes);
 
-  /* АРЕНА */
   var arenaGame = 'none', arenaState = {};
   var arenaTitle = $('arenaTitle'), arenaDisplay = $('arenaDisplay');
   var arenaStatus = $('arenaStatus'), arenaActions = $('arenaActions');
@@ -1660,7 +1664,6 @@
   on($('openDice'), openDice);
   on($('openBJ'), openBJ);
 
-  /* АПГРЕЙД */
   var upgMyItem = null, upgTargetItem = null, upgInProgress = false;
   var upgWheelAngle = 0;
   var upgCanvas = $('upgCanvas'), upgCtx = upgCanvas ? upgCanvas.getContext('2d') : null;
@@ -1833,9 +1836,6 @@
 
   console.log('ВАСЯ ДРОП: часть 3 загружена');
   
- /* ============================================
-     FIREBASE ОНЛАЙН
-  ============================================ */
   var FB_state = { online: false, init: false };
   var friendsList = [];
   var incomingRequests = [];
@@ -1874,8 +1874,7 @@
   function FB_setOnline() {
     if (!FB_check()) return;
     var FB = window.FB;
-    var userRef = FB.ref('online/' + S.playerId);
-    FB.set(userRef, {
+    FB.set('online/' + S.playerId, {
       name: S.name || 'Игрок',
       balance: S.balance,
       maxWin: S.maxWin,
@@ -1886,7 +1885,7 @@
       color: S.nickColor,
       lastSeen: Date.now()
     });
-    userRef.onDisconnect().remove();
+    FB.onDisconnect('online/' + S.playerId).remove();
     FB_state.online = true;
   }
   window.FB_setOnline = FB_setOnline;
@@ -1894,8 +1893,7 @@
 
   function FB_listenPlayers() {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.onValue(FB.ref('online'), function(snap) {
+    window.FB.onValue('online', function(snap) {
       var data = snap.val() || {}, arr = [], now = Date.now();
       for (var id in data) {
         var p = data[id];
@@ -1939,14 +1937,8 @@
     var rankName = RANKS[0].name;
     for (var i = 0; i < RANKS.length; i++) if ((player.maxWin || 0) >= RANKS[i].min) rankName = RANKS[i].name;
     $('pmRank').textContent = rankName;
-    $('pmDuel').onclick = function() {
-      $('playerModal').classList.remove('show');
-      FB_startDuelTo(player.id, player.name);
-    };
-    $('pmFriend').onclick = function() {
-      FB_sendFriendRequest(player.id, player.name);
-      $('playerModal').classList.remove('show');
-    };
+    $('pmDuel').onclick = function() { $('playerModal').classList.remove('show'); FB_startDuelTo(player.id, player.name); };
+    $('pmFriend').onclick = function() { FB_sendFriendRequest(player.id, player.name); $('playerModal').classList.remove('show'); };
     $('pmClose').onclick = function() { $('playerModal').classList.remove('show'); };
     $('playerModal').classList.add('show');
   }
@@ -1954,8 +1946,7 @@
 
   function FB_listenFriends() {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.onValue(FB.ref('friends/' + S.playerId), function(snap) {
+    window.FB.onValue('friends/' + S.playerId, function(snap) {
       var d = snap.val() || {};
       friendsList = [];
       for (var id in d) if (d[id] && d[id].name) friendsList.push({ id: id, name: d[id].name, color: d[id].color || '#fbbf24' });
@@ -1965,7 +1956,7 @@
   function renderFriends() {
     var cont = $('friendsList'); if (!cont) return;
     cont.innerHTML = '';
-    if (!friendsList.length) { cont.innerHTML = '<div style="font-size:11px;color:#6b7280;padding:4px;">Пока никого. Нажми на игрока в списке выше!</div>'; return; }
+    if (!friendsList.length) { cont.innerHTML = '<div style="font-size:11px;color:#6b7280;padding:4px;">Пока никого. Нажми на игрока выше!</div>'; return; }
     for (var i = 0; i < friendsList.length; i++) {
       var f = friendsList[i];
       var el = document.createElement('div');
@@ -1977,7 +1968,7 @@
       el.appendChild(duelBtn);
       var del = document.createElement('span');
       del.textContent = '✕'; del.style.cssText = 'cursor:pointer;margin-left:2px;color:#ef4444;font-size:12px;';
-      (function(fr) { del.addEventListener('click', function(e) { e.stopPropagation(); if (confirm('Удалить из друзей?')) { var FB = window.FB; FB.remove(FB.ref('friends/' + S.playerId + '/' + fr.id)); FB.remove(FB.ref('friends/' + fr.id + '/' + S.playerId)); } }); })(f);
+      (function(fr) { del.addEventListener('click', function(e) { e.stopPropagation(); if (confirm('Удалить из друзей?')) { var FB = window.FB; FB.remove('friends/' + S.playerId + '/' + fr.id); FB.remove('friends/' + fr.id + '/' + S.playerId); } }); })(f);
       el.appendChild(del);
       cont.appendChild(el);
     }
@@ -1985,20 +1976,15 @@
   function FB_sendFriendRequest(toId, toName) {
     if (!FB_check() || !toId) return;
     if (toId === S.playerId) { alert('Это ты'); return; }
-    var FB = window.FB;
-    FB.set(FB.ref('friend_requests/' + toId + '/' + S.playerId), {
-      fromId: S.playerId,
-      fromName: S.name || 'Игрок',
-      fromColor: S.nickColor,
-      t: Date.now()
+    window.FB.set('friend_requests/' + toId + '/' + S.playerId, {
+      fromId: S.playerId, fromName: S.name || 'Игрок', fromColor: S.nickColor, t: Date.now()
     });
     alert('Заявка отправлена ' + toName);
     sCoin(); haptic('success');
   }
   function FB_listenRequests() {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.onValue(FB.ref('friend_requests/' + S.playerId), function(snap) {
+    window.FB.onValue('friend_requests/' + S.playerId, function(snap) {
       var d = snap.val() || {};
       incomingRequests = [];
       for (var id in d) if (d[id]) incomingRequests.push({ id: id, name: d[id].fromName || 'Игрок', color: d[id].fromColor || '#fbbf24' });
@@ -2027,28 +2013,27 @@
   function FB_acceptRequest(fromId, fromName, fromColor) {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.set(FB.ref('friends/' + S.playerId + '/' + fromId), { name: fromName, color: fromColor });
-    FB.set(FB.ref('friends/' + fromId + '/' + S.playerId), { name: S.name || 'Игрок', color: S.nickColor });
-    FB.remove(FB.ref('friend_requests/' + S.playerId + '/' + fromId));
+    FB.set('friends/' + S.playerId + '/' + fromId, { name: fromName, color: fromColor });
+    FB.set('friends/' + fromId + '/' + S.playerId, { name: S.name || 'Игрок', color: S.nickColor });
+    FB.remove('friend_requests/' + S.playerId + '/' + fromId);
     sCoin(); haptic('success');
   }
   function FB_declineRequest(fromId) {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.remove(FB.ref('friend_requests/' + S.playerId + '/' + fromId));
+    window.FB.remove('friend_requests/' + S.playerId + '/' + fromId);
   }
 
   function FB_listenChat() {
     if (!FB_check() || chatListenerAttached) return;
     chatListenerAttached = true;
-    var FB = window.FB;
-    FB.onValue(FB.query(FB.ref('chat'), FB.limitToLast(40)), function(snap) {
+    window.FB.onValue('chat', function(snap) {
       var data = snap.val() || {};
       var box = $('chatBox'); if (!box) return;
-      box.innerHTML = '';
       var keys = Object.keys(data).sort(function(a, b) { return (data[a].t || 0) - (data[b].t || 0); });
-      for (var i = 0; i < keys.length; i++) {
-        var m = data[keys[i]];
+      var last40 = keys.slice(-40);
+      box.innerHTML = '';
+      for (var i = 0; i < last40.length; i++) {
+        var m = data[last40[i]];
         var mine = m.pid === S.playerId;
         var el = document.createElement('div');
         el.style.cssText = 'font-size:11px;padding:5px 9px;border-radius:9px;background:' + (mine ? 'linear-gradient(135deg,#7c2d12,#b45309)' : '#1a0a2e') + ';color:' + (mine ? '#fff' : '#d1d5db') + ';max-width:92%;word-wrap:break-word;line-height:1.35;' + (mine ? 'align-self:flex-end;' : '');
@@ -2064,7 +2049,7 @@
           (function(msg) {
             nameSpan.addEventListener('click', function() {
               var FB2 = window.FB;
-              FB2.get(FB2.ref('online/' + msg.pid)).then(function(s) {
+              FB2.get('online/' + msg.pid).then(function(s) {
                 var p = s.val() || {};
                 showPlayerModal({ id: msg.pid, name: p.name || msg.name, balance: p.balance || 0, color: p.color || msg.color, maxWin: p.maxWin || 0, wins: p.wins || 0, spins: p.spins || 0, jackpots: p.jackpots || 0, casesOpened: p.casesOpened || 0 });
               });
@@ -2090,14 +2075,8 @@
     var inp = $('chatInput'); if (!inp) return;
     var text = (inp.value || '').trim().slice(0, 80);
     if (!text) return;
-    var FB = window.FB;
-    FB.push(FB.ref('chat'), {
-      pid: S.playerId,
-      name: S.name || 'Игрок',
-      color: S.nickColor,
-      maxWin: S.maxWin,
-      text: text,
-      t: Date.now()
+    window.FB.push('chat', {
+      pid: S.playerId, name: S.name || 'Игрок', color: S.nickColor, maxWin: S.maxWin, text: text, t: Date.now()
     });
     inp.value = '';
     haptic('light');
@@ -2107,11 +2086,11 @@
 
   function FB_listenLB() {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.onValue(FB.query(FB.ref('leaderboard'), FB.orderByChild('maxWin'), FB.limitToLast(10)), function(snap) {
+    window.FB.onValue('leaderboard', function(snap) {
       var data = snap.val() || {}, arr = [];
       for (var k in data) arr.push(data[k]);
       arr.sort(function(a, b) { return (b.maxWin || 0) - (a.maxWin || 0); });
+      arr = arr.slice(0, 10);
       var cont = $('globalLB'); if (!cont) return;
       cont.innerHTML = '';
       if (!arr.length) { cont.innerHTML = '<div style="font-size:11px;color:#6b7280;padding:8px;text-align:center;">Пока пусто.</div>'; return; }
@@ -2128,25 +2107,24 @@
   }
   function FB_updateLB() {
     if (!FB_check() || !S.maxWin) return;
-    var FB = window.FB;
-    FB.set(FB.ref('leaderboard/' + S.playerId), { name: S.name || 'Игрок', maxWin: S.maxWin, color: S.nickColor, t: Date.now() });
+    window.FB.set('leaderboard/' + S.playerId, { name: S.name || 'Игрок', maxWin: S.maxWin, color: S.nickColor, t: Date.now() });
   }
   window.FB_updateLB = FB_updateLB;
 
   function FB_pushWin(sym, mult, bet, type) {
     if (!FB_check() || !mult || mult < 5) return;
-    var FB = window.FB;
-    FB.push(FB.ref('wins'), { pid: S.playerId, name: S.name || 'Игрок', color: S.nickColor, sym: sym, mult: mult, payout: bet * mult, type: type || 'win', t: Date.now() });
+    window.FB.push('wins', { pid: S.playerId, name: S.name || 'Игрок', color: S.nickColor, sym: sym, mult: mult, payout: bet * mult, type: type || 'win', t: Date.now() });
     if (S.maxWin > 0) FB_updateLB();
   }
   window.FB_pushWin = FB_pushWin;
+
   function FB_listenWins() {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.onValue(FB.query(FB.ref('wins'), FB.limitToLast(20)), function(snap) {
+    window.FB.onValue('wins', function(snap) {
       var data = snap.val() || {}, arr = [];
       for (var k in data) arr.push(data[k]);
       arr.sort(function(a, b) { return (b.t || 0) - (a.t || 0); });
+      arr = arr.slice(0, 20);
       var cont = $('liveEvents'); if (!cont) return;
       cont.innerHTML = '';
       if (!arr.length) { cont.innerHTML = '<div style="font-size:11px;color:#6b7280;padding:6px;text-align:center;">Пусто. Играй!</div>'; return; }
@@ -2182,14 +2160,14 @@
     if (S.balance < S.bet) { alert('Не хватает ВК. Ставка: ' + S.bet); return; }
     var FB = window.FB;
     var key = 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-    FB.set(FB.ref('duels/' + key), {
+    FB.set('duels/' + key, {
       from: S.playerId, fromName: S.name || 'Игрок', fromColor: S.nickColor,
       to: oppId, toName: oppName,
       bet: S.bet, status: 'pending', t: Date.now()
     });
     $('duelStatus').textContent = '⏳ Вызов отправлен: ' + oppName;
     haptic('light');
-    FB.onValue(FB.ref('duels/' + key), function(snap) {
+    FB.onValue('duels/' + key, function(snap) {
       var d = snap.val();
       if (!d) return;
       if (d.status === 'accepted') {
@@ -2203,8 +2181,7 @@
   }
   function FB_listenDuel() {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.onValue(FB.ref('duels'), function(snap) {
+    window.FB.onValue('duels', function(snap) {
       var data = snap.val() || {}, now = Date.now(), incoming = null;
       for (var k in data) {
         var d = data[k];
@@ -2227,7 +2204,7 @@
     if (!FB_check()) return;
     var FB = window.FB;
     if (S.balance < d.bet) { alert('Не хватает ВК'); FB_declineDuel(key); return; }
-    FB.update(FB.ref('duels/' + key), { status: 'accepted', toName: S.name || 'Игрок' });
+    FB.update('duels/' + key, { status: 'accepted', toName: S.name || 'Игрок' });
     $('duelIncoming').style.display = 'none';
     duelState.active = true; duelState.currentKey = key; duelState.opponent = d.fromName || 'Игрок';
     $('duelStatus').textContent = '⚔️ Дуэль! 10 раундов';
@@ -2235,8 +2212,7 @@
   }
   function FB_declineDuel(key) {
     if (!FB_check()) return;
-    var FB = window.FB;
-    FB.update(FB.ref('duels/' + key), { status: 'declined' });
+    window.FB.update('duels/' + key, { status: 'declined' });
     $('duelIncoming').style.display = 'none';
   }
   function FB_runDuelRound(duelKey) {
@@ -2253,9 +2229,9 @@
       myTotal += mult * bet;
     }
     $('duelStatus').textContent = '🎰 Твой результат: +' + myTotal.toLocaleString('ru-RU') + ' ВК';
-    FB.update(FB.ref('duels/' + duelKey), { ['score_' + S.playerId]: myTotal });
+    FB.update('duels/' + duelKey, { ['score_' + S.playerId]: myTotal });
     setTimeout(function() {
-      FB.get(FB.ref('duels/' + duelKey)).then(function(snap) {
+      FB.get('duels/' + duelKey).then(function(snap) {
         var d = snap.val() || {}, scores = {};
         for (var k in d) if (k.indexOf('score_') === 0) scores[k.slice(6)] = d[k];
         var keys = Object.keys(scores);
@@ -2270,7 +2246,7 @@
           else if (draw) { $('duelStatus').innerHTML = '<span style="color:#fbbf24">🤝 НИЧЬЯ</span>'; sCoin(); }
           else { $('duelStatus').innerHTML = '<span style="color:#ef4444">😢 Проиграл -' + myS.toLocaleString('ru-RU') + '</span>'; sLose(); voiceLose(); }
           duelState.active = false;
-          setTimeout(function() { FB.remove(FB.ref('duels/' + duelKey)); }, 5000);
+          setTimeout(function() { FB.remove('duels/' + duelKey); }, 5000);
         } else {
           $('duelStatus').textContent = '⏳ Ждём соперника...';
           setTimeout(function() { FB_runDuelRound(duelKey); }, 3000);
@@ -2280,10 +2256,7 @@
   }
   on($('duelBtn'), FB_startDuel);
 
-  /* ============================================
-     ДУРАК ОНЛАЙН
-  ============================================ */
-  var durakState = { active: false, gameId: null, myHand: [], opponentHands: {}, field: [], deck: [], kresti: null, myTurn: false, gameRef: null };
+  var durakState = { gameId: null, myHand: [], opponentHands: {}, field: [], deck: [], kresti: null, myTurn: false };
   var durakCardSuits = ['♠','♥','♦','♣'];
   var durakCardRanks = ['6','7','8','9','10','J','Q','K','A'];
 
@@ -2307,29 +2280,29 @@
     $('durakTitle').textContent = '🎴 ДУРАК — ЛОББИ';
 
     var FB = window.FB;
-    FB.get(FB.ref('durak_lobby')).then(function(snap) {
+    FB.get('durak_lobby').then(function(snap) {
       var lobbies = snap.val() || {};
       var myLobby = null;
       var now = Date.now();
       for (var k in lobbies) {
         var L = lobbies[k];
         if (!L) continue;
-        if (now - (L.t || 0) > 300000) { FB.remove(FB.ref('durak_lobby/' + k)); continue; }
+        if (now - (L.t || 0) > 300000) { FB.remove('durak_lobby/' + k); continue; }
         if (L.players && L.players[S.playerId]) myLobby = k;
         else if (!myLobby && L.status === 'waiting' && Object.keys(L.players || {}).length < 4) myLobby = k;
       }
       if (!myLobby) myLobby = 'L_' + Date.now();
       durakState.gameId = myLobby;
-      FB.update(FB.ref('durak_lobby/' + myLobby), { t: Date.now(), status: 'waiting' });
-      FB.set(FB.ref('durak_lobby/' + myLobby + '/players/' + S.playerId), { name: S.name || 'Игрок', color: S.nickColor, ready: false });
-      FB.ref('durak_lobby/' + myLobby + '/players/' + S.playerId).onDisconnect().remove();
+      FB.update('durak_lobby/' + myLobby, { t: Date.now(), status: 'waiting' });
+      FB.set('durak_lobby/' + myLobby + '/players/' + S.playerId, { name: S.name || 'Игрок', color: S.nickColor, ready: false });
+      FB.onDisconnect('durak_lobby/' + myLobby + '/players/' + S.playerId).remove();
       listenDurakLobby(myLobby);
     });
   }
 
   function listenDurakLobby(lobbyId) {
     var FB = window.FB;
-    FB.onValue(FB.ref('durak_lobby/' + lobbyId), function(snap) {
+    FB.onValue('durak_lobby/' + lobbyId, function(snap) {
       var L = snap.val();
       if (!L) { $('durakLobby').style.display = 'block'; $('durakGame').style.display = 'none'; return; }
       if (L.status === 'playing') {
@@ -2353,9 +2326,7 @@
           cnt++;
         }
         $('durakLobbyStatus').textContent = 'Игроков: ' + cnt + ' / 4';
-        if (pls[S.playerId] && (pls[S.playerId].host || cnt >= 2)) {
-          $('durakStartBtn').style.display = 'block';
-        }
+        if (pls[S.playerId] && cnt >= 2) $('durakStartBtn').style.display = 'block';
       }
     });
   }
@@ -2363,7 +2334,7 @@
   function startDurakGame() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
       var L = snap.val() || {};
       var players = L.players || {};
       var ids = Object.keys(players);
@@ -2372,26 +2343,16 @@
       var kresti = deck[deck.length - 1];
       var hands = {};
       for (var i = 0; i < ids.length; i++) hands[ids[i]] = deck.splice(0, 6);
-      FB.update(FB.ref('durak_lobby/' + durakState.gameId), {
-        status: 'playing',
-        deck: deck,
-        kresti: kresti,
-        hands: hands,
-        field: [],
-        attackerIdx: 0,
-        order: ids,
-        t: Date.now()
-      });
+      FB.update('durak_lobby/' + durakState.gameId, { status: 'playing', deck: deck, kresti: kresti, hands: hands, field: [], attackerIdx: 0, order: ids, t: Date.now() });
     });
   }
 
   function listenDurakGame(gameId) {
     var FB = window.FB;
-    FB.onValue(FB.ref('durak_lobby/' + gameId), function(snap) {
+    FB.onValue('durak_lobby/' + gameId, function(snap) {
       var G = snap.val();
       if (!G || G.status !== 'playing') return;
-      var myHand = (G.hands && G.hands[S.playerId]) || [];
-      durakState.myHand = myHand;
+      durakState.myHand = (G.hands && G.hands[S.playerId]) || [];
       durakState.field = G.field || [];
       durakState.deck = G.deck || [];
       durakState.kresti = G.kresti;
@@ -2468,40 +2429,36 @@
     var pair = { attack: card, defend: null };
     var newField = field.concat([pair]);
     var newHand = durakState.myHand.filter(function(c) { return !(c.rank === card.rank && c.suit === card.suit); });
-    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
       var G = snap.val();
       var order = G.order || [];
       var nextIdx = (G.attackerIdx + 1) % order.length;
-      FB.update(FB.ref('durak_lobby/' + durakState.gameId), {
-        field: newField,
-        ['hands/' + S.playerId]: newHand,
-        attackerIdx: nextIdx
-      });
+      FB.update('durak_lobby/' + durakState.gameId, { field: newField, ['hands/' + S.playerId]: newHand, attackerIdx: nextIdx });
     });
     sTick(); haptic('light');
   }
   function durakPass() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
       var G = snap.val() || {};
       var order = G.order || [];
       var nextIdx = (G.attackerIdx + 1) % order.length;
-      FB.update(FB.ref('durak_lobby/' + durakState.gameId), { field: [], attackerIdx: nextIdx });
+      FB.update('durak_lobby/' + durakState.gameId, { field: [], attackerIdx: nextIdx });
     });
     sCoin();
   }
   function durakTake() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get('durak_lobby/' + durakState.gameId).then(function(snap) {
       var G = snap.val() || {};
       var field = G.field || [];
       var add = [];
       for (var i = 0; i < field.length; i++) { if (field[i].attack) add.push(field[i].attack); if (field[i].defend) add.push(field[i].defend); }
       var myHand = (G.hands && G.hands[S.playerId]) || [];
       var newHand = myHand.concat(add);
-      FB.update(FB.ref('durak_lobby/' + durakState.gameId), { field: [], ['hands/' + S.playerId]: newHand });
+      FB.update('durak_lobby/' + durakState.gameId, { field: [], ['hands/' + S.playerId]: newHand });
     });
     sLose();
   }
@@ -2509,20 +2466,17 @@
   on($('durakBtn'), openDurak);
   on($('durakExit'), function() {
     if (durakState.gameId && FB_check()) {
-      var FB = window.FB;
-      FB.remove(FB.ref('durak_lobby/' + durakState.gameId + '/players/' + S.playerId));
+      window.FB.remove('durak_lobby/' + durakState.gameId + '/players/' + S.playerId);
     }
     showScreen('game');
     switchPage('online');
   });
   on($('durakReadyBtn'), function() {
     if (!FB_check() || !durakState.gameId) return;
-    var FB = window.FB;
-    FB.update(FB.ref('durak_lobby/' + durakState.gameId + '/players/' + S.playerId), { ready: true });
+    window.FB.update('durak_lobby/' + durakState.gameId + '/players/' + S.playerId, { ready: true });
   });
   on($('durakStartBtn'), startDurakGame);
 
-  /* ФЕЙК-ЛЕНТА */
   var feedTrack = $('feedTrack');
   var feedX = 0, lastFeedTime = 0, feedWidth = 0;
   function feedLoop(now) {
@@ -2535,24 +2489,6 @@
       feedTrack.style.transform = 'translate3d(' + feedX + 'px,0,0)';
     }
     requestAnimationFrame(feedLoop);
-  }
-  if (feedTrack) {
-    var fakeNames = ['Вася228','Kolya_X','Олег','SlavaPro','Дмитрий','Максим2000','Сергей','Роман','НикПро','Кирилл'];
-    var fakeWins = [{s:'🍒',m:3},{s:'🍋',m:5},{s:'🔔',m:8},{s:'💎',m:15},{s:'7️⃣',m:30},{s:'🗿',m:100}];
-    for (var fi = 0; fi < 8; fi++) {
-      var n = fakeNames[(Math.random() * fakeNames.length) | 0];
-      var w = fakeWins[(Math.random() * fakeWins.length) | 0];
-      pushFeed(n, w.s, w.m, BETS[(Math.random() * 5) | 0]);
-    }
-    requestAnimationFrame(function(t) { lastFeedTime = t; requestAnimationFrame(feedLoop); });
-    (function sched() {
-      setTimeout(function() {
-        var n2 = fakeNames[(Math.random() * fakeNames.length) | 0];
-        var w2 = fakeWins[(Math.random() * fakeWins.length) | 0];
-        pushFeed(n2, w2.s, w2.m, BETS[(Math.random() * 5) | 0]);
-        sched();
-      }, 3000 + Math.random() * 3000);
-    })();
   }
 
   var origSwitch = switchPage;
