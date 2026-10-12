@@ -6,49 +6,58 @@
 <meta name="theme-color" content="#05030f">
 <title>ВАСЯ ДРОП</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" defer></script>
 <script>
+  // Игра работает БЕЗ Firebase сразу. Firebase подключается в фоне.
   window.FB = { ready: false };
-  function initFB() {
-    if (typeof firebase === 'undefined') { setTimeout(initFB, 300); return; }
-    try {
-      firebase.initializeApp({
-        apiKey: "AIzaSyAa_yNYHP6e1omV1X_aDWmT7jYu3iPh--o",
-        authDomain: "vasya-casino.firebaseapp.com",
-        databaseURL: "https://vasya-casino-default-rtdb.firebaseio.com",
-        projectId: "vasya-casino",
-        storageBucket: "vasya-casino.firebasestorage.app",
-        messagingSenderId: "497507737017",
-        appId: "1:497507737017:web:27a19152bb74956a5aaa68"
-      });
-      var db = firebase.database();
-      window.FB = {
-        db: db,
-        ref: function(path) { return db.ref(path); },
-        set: function(path, v) { return db.ref(path).set(v); },
-        get: function(path) { return db.ref(path).once('value'); },
-        push: function(path, v) { return db.ref(path).push(v); },
-        onValue: function(path, cb) { return db.ref(path).on('value', cb); },
-        update: function(path, v) { return db.ref(path).update(v); },
-        remove: function(path) { return db.ref(path).remove(); },
-        onDisconnect: function(path) { return db.ref(path).onDisconnect(); },
-        query: function(path, orderBy, limit) {
-          var q = db.ref(path);
-          if (orderBy) q = q.orderByChild(orderBy);
-          if (limit) q = q.limitToLast(limit);
-          return q;
-        },
-        ready: true
-      };
-      window.dispatchEvent(new Event('fb-ready'));
-      console.log('Firebase готов');
-    } catch(e) {
-      console.log('Firebase error:', e);
-      setTimeout(initFB, 1000);
+  window.addEventListener('load', function() {
+    var attempts = 0;
+    function tryInit() {
+      attempts++;
+      if (typeof firebase === 'undefined') {
+        if (attempts < 30) setTimeout(tryInit, 500);
+        else console.log('Firebase не загрузился после 15 сек');
+        return;
+      }
+      try {
+        firebase.initializeApp({
+          apiKey: "AIzaSyAa_yNYHP6e1omV1X_aDWmT7jYu3iPh--o",
+          authDomain: "vasya-casino.firebaseapp.com",
+          databaseURL: "https://vasya-casino-default-rtdb.firebaseio.com",
+          projectId: "vasya-casino",
+          storageBucket: "vasya-casino.firebasestorage.app",
+          messagingSenderId: "497507737017",
+          appId: "1:497507737017:web:27a19152bb74956a5aaa68"
+        });
+        var db = firebase.database();
+        window.FB = {
+          db: db,
+          ref: function(path) { return db.ref(path); },
+          set: function(path, v) { return db.ref(path).set(v); },
+          get: function(path) { return db.ref(path).once('value'); },
+          push: function(path, v) { return db.ref(path).push(v); },
+          onValue: function(path, cb) { return db.ref(path).on('value', cb); },
+          update: function(path, v) { return db.ref(path).update(v); },
+          remove: function(path) { return db.ref(path).remove(); },
+          onDisconnect: function(path) { return db.ref(path).onDisconnect(); },
+          query: function(path, orderBy, limit) {
+            var q = db.ref(path);
+            if (orderBy) q = q.orderByChild(orderBy);
+            if (limit) q = q.limitToLast(limit);
+            return q;
+          },
+          ready: true
+        };
+        window.dispatchEvent(new Event('fb-ready'));
+        console.log('Firebase готов (' + attempts + ' попыток)');
+      } catch(e) {
+        console.log('Firebase error:', e);
+        setTimeout(tryInit, 1000);
+      }
     }
-  }
-  setTimeout(initFB, 200);
+    tryInit();
+  });
 </script>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
