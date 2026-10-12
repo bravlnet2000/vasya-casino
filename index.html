@@ -1884,7 +1884,7 @@
       jackpots: S.jackpots,
       casesOpened: S.casesOpened,
       color: S.nickColor,
-      lastSeen: FB.serverTimestamp()
+      lastSeen: Date.now()
     });
     userRef.onDisconnect().remove();
     FB_state.online = true;
@@ -2290,7 +2290,6 @@
   function makeDeck() {
     var d = [];
     for (var s = 0; s < 4; s++) for (var r = 0; r < 9; r++) d.push({ rank: durakCardRanks[r], suit: durakCardSuits[s] });
-    // перемешивание
     for (var i = d.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = d[i]; d[i] = d[j]; d[j] = t; }
     return d;
   }
@@ -2308,35 +2307,29 @@
     $('durakTitle').textContent = '🎴 ДУРАК — ЛОББИ';
 
     var FB = window.FB;
-    // создаём или ищем свободное лобби
-    FB.get(FB.ref(FB.db, 'durak_lobby')).then(function(snap) {
+    FB.get(FB.ref('durak_lobby')).then(function(snap) {
       var lobbies = snap.val() || {};
       var myLobby = null;
       var now = Date.now();
       for (var k in lobbies) {
         var L = lobbies[k];
         if (!L) continue;
-        if (now - (L.t || 0) > 300000) { FB.remove(FB.ref(FB.db, 'durak_lobby/' + k)); continue; }
+        if (now - (L.t || 0) > 300000) { FB.remove(FB.ref('durak_lobby/' + k)); continue; }
         if (L.players && L.players[S.playerId]) myLobby = k;
         else if (!myLobby && L.status === 'waiting' && Object.keys(L.players || {}).length < 4) myLobby = k;
       }
       if (!myLobby) myLobby = 'L_' + Date.now();
       durakState.gameId = myLobby;
-      FB.update(FB.ref(FB.db, 'durak_lobby/' + myLobby), {
-        t: Date.now(),
-        status: 'waiting'
-      });
-      FB.set(FB.ref(FB.db, 'durak_lobby/' + myLobby + '/players/' + S.playerId), {
-        name: S.name || 'Игрок', color: S.nickColor, ready: false
-      });
-      FB.onDisconnect(FB.ref(FB.db, 'durak_lobby/' + myLobby + '/players/' + S.playerId)).remove();
+      FB.update(FB.ref('durak_lobby/' + myLobby), { t: Date.now(), status: 'waiting' });
+      FB.set(FB.ref('durak_lobby/' + myLobby + '/players/' + S.playerId), { name: S.name || 'Игрок', color: S.nickColor, ready: false });
+      FB.ref('durak_lobby/' + myLobby + '/players/' + S.playerId).onDisconnect().remove();
       listenDurakLobby(myLobby);
     });
   }
 
   function listenDurakLobby(lobbyId) {
     var FB = window.FB;
-    FB.onValue(FB.ref(FB.db, 'durak_lobby/' + lobbyId), function(snap) {
+    FB.onValue(FB.ref('durak_lobby/' + lobbyId), function(snap) {
       var L = snap.val();
       if (!L) { $('durakLobby').style.display = 'block'; $('durakGame').style.display = 'none'; return; }
       if (L.status === 'playing') {
@@ -2360,7 +2353,6 @@
           cnt++;
         }
         $('durakLobbyStatus').textContent = 'Игроков: ' + cnt + ' / 4';
-        // если я создал лобби — я могу стартовать при >= 2
         if (pls[S.playerId] && (pls[S.playerId].host || cnt >= 2)) {
           $('durakStartBtn').style.display = 'block';
         }
@@ -2371,17 +2363,16 @@
   function startDurakGame() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.get(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
       var L = snap.val() || {};
       var players = L.players || {};
       var ids = Object.keys(players);
       if (ids.length < 2) { alert('Нужно минимум 2 игрока'); return; }
       var deck = makeDeck();
       var kresti = deck[deck.length - 1];
-      // раздаём по 6 карт каждому
       var hands = {};
       for (var i = 0; i < ids.length; i++) hands[ids[i]] = deck.splice(0, 6);
-      FB.update(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId), {
+      FB.update(FB.ref('durak_lobby/' + durakState.gameId), {
         status: 'playing',
         deck: deck,
         kresti: kresti,
@@ -2396,7 +2387,7 @@
 
   function listenDurakGame(gameId) {
     var FB = window.FB;
-    FB.onValue(FB.ref(FB.db, 'durak_lobby/' + gameId), function(snap) {
+    FB.onValue(FB.ref('durak_lobby/' + gameId), function(snap) {
       var G = snap.val();
       if (!G || G.status !== 'playing') return;
       var myHand = (G.hands && G.hands[S.playerId]) || [];
@@ -2417,7 +2408,6 @@
     var attackerName = (G.players && G.players[attackerId] && G.players[attackerId].name) || 'Игрок';
     $('durakKresti').textContent = durakState.kresti ? durakState.kresti.rank + durakState.kresti.suit : '?';
     $('durakDeck').textContent = durakState.deck.length;
-    // стол
     var fieldCont = $('durakField');
     fieldCont.innerHTML = '';
     var field = durakState.field || [];
@@ -2428,7 +2418,6 @@
       wrap.innerHTML = cardHtml(pair.attack, true, false) + (pair.defend ? cardHtml(pair.defend, true, false) : '');
       fieldCont.appendChild(wrap);
     }
-    // рука
     var meCont = $('durakMe');
     meCont.innerHTML = '';
     for (var j = 0; j < durakState.myHand.length; j++) {
@@ -2437,13 +2426,10 @@
       el.innerHTML = cardHtml(c, false, durakState.myTurn);
       var cardEl = el.firstChild;
       if (durakState.myTurn) {
-        (function(card) {
-          cardEl.addEventListener('click', function() { durakPlayCard(card); });
-        })(c);
+        (function(card) { cardEl.addEventListener('click', function() { durakPlayCard(card); }); })(c);
       }
       meCont.appendChild(cardEl);
     }
-    // оппоненты
     var oppsCont = $('durakOpps');
     oppsCont.innerHTML = '';
     for (var k in durakState.opponentHands) {
@@ -2455,7 +2441,6 @@
       row.innerHTML = '<div style="font-size:10px;color:' + color + ';font-weight:900;margin-bottom:4px;">' + escapeHtml(name) + ' (' + h.length + ')</div><div style="display:flex;gap:2px;flex-wrap:wrap;">' + h.map(function() { return '<div class="card small back"></div>'; }).join('') + '</div>';
       oppsCont.appendChild(row);
     }
-    // статус
     var act = $('durakActions');
     act.innerHTML = '';
     if (durakState.myTurn) {
@@ -2483,16 +2468,11 @@
     var pair = { attack: card, defend: null };
     var newField = field.concat([pair]);
     var newHand = durakState.myHand.filter(function(c) { return !(c.rank === card.rank && c.suit === card.suit); });
-    var updates = {};
-    updates['durak_lobby/' + durakState.gameId + '/field'] = newField;
-    updates['durak_lobby/' + durakState.gameId + '/hands/' + S.playerId] = newHand;
-    // передаём ход следующему
-    var G = null;
-    FB.get(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId)).then(function(snap) {
-      G = snap.val();
+    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
+      var G = snap.val();
       var order = G.order || [];
       var nextIdx = (G.attackerIdx + 1) % order.length;
-      FB.update(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId), {
+      FB.update(FB.ref('durak_lobby/' + durakState.gameId), {
         field: newField,
         ['hands/' + S.playerId]: newHand,
         attackerIdx: nextIdx
@@ -2503,32 +2483,25 @@
   function durakPass() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.get(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
       var G = snap.val() || {};
-      // стол в бито, следующий атакует
       var order = G.order || [];
       var nextIdx = (G.attackerIdx + 1) % order.length;
-      FB.update(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId), {
-        field: [],
-        attackerIdx: nextIdx
-      });
+      FB.update(FB.ref('durak_lobby/' + durakState.gameId), { field: [], attackerIdx: nextIdx });
     });
     sCoin();
   }
   function durakTake() {
     if (!FB_check()) return;
     var FB = window.FB;
-    FB.get(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId)).then(function(snap) {
+    FB.get(FB.ref('durak_lobby/' + durakState.gameId)).then(function(snap) {
       var G = snap.val() || {};
       var field = G.field || [];
       var add = [];
       for (var i = 0; i < field.length; i++) { if (field[i].attack) add.push(field[i].attack); if (field[i].defend) add.push(field[i].defend); }
       var myHand = (G.hands && G.hands[S.playerId]) || [];
       var newHand = myHand.concat(add);
-      FB.update(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId), {
-        field: [],
-        ['hands/' + S.playerId]: newHand
-      });
+      FB.update(FB.ref('durak_lobby/' + durakState.gameId), { field: [], ['hands/' + S.playerId]: newHand });
     });
     sLose();
   }
@@ -2537,7 +2510,7 @@
   on($('durakExit'), function() {
     if (durakState.gameId && FB_check()) {
       var FB = window.FB;
-      FB.remove(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId + '/players/' + S.playerId));
+      FB.remove(FB.ref('durak_lobby/' + durakState.gameId + '/players/' + S.playerId));
     }
     showScreen('game');
     switchPage('online');
@@ -2545,7 +2518,7 @@
   on($('durakReadyBtn'), function() {
     if (!FB_check() || !durakState.gameId) return;
     var FB = window.FB;
-    FB.update(FB.ref(FB.db, 'durak_lobby/' + durakState.gameId + '/players/' + S.playerId), { ready: true });
+    FB.update(FB.ref('durak_lobby/' + durakState.gameId + '/players/' + S.playerId), { ready: true });
   });
   on($('durakStartBtn'), startDurakGame);
 
@@ -2582,7 +2555,6 @@
     })();
   }
 
-  /* МУЗЫКА ПО СТРАНИЦАМ */
   var origSwitch = switchPage;
   window.switchPage = function(name) {
     origSwitch(name);
@@ -2599,7 +2571,6 @@
     })(allNav2[nn2]);
   }
 
-  /* СТАРТ */
   render();
   renderAch();
   renderSkins();
